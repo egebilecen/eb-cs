@@ -13,9 +13,15 @@ namespace EB_Utility
     {
         public static string error_file = "error.eb";
 
-        public static void log_exception(Exception ex)
+        public static void log_exception(Exception ex, string additional_msg="")
         {
-            File.AppendAllText(error_file, "Exception: "+ex.GetType().FullName+"\nMessage: "+ex.Message+"\nStack trace: "+ex.StackTrace.Trim()+"\nDate: "+DateTime.Now.ToString("dd/MM/yyyy, HH:mm:ss")+"\n---------------\n");
+            string ex_msg = "Exception: "+ex.GetType().FullName +
+                            "\nMessage: "+ex.Message +
+                            "\nStack trace: "+ex.StackTrace.Trim() +
+                            "\nDate: "+DateTime.Now.ToString("dd/MM/yyyy, HH:mm:ss") +
+                            (additional_msg != "" ? "\n"+additional_msg : "") +
+                            "\n---------------\n";
+            File.AppendAllText(error_file, ex_msg);
         }
     }
 
