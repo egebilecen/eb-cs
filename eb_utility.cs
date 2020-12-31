@@ -27,11 +27,37 @@ namespace EB_Utility
 
     public static class Settings
     {
-        public static string settings_file = "settings.eb";
-        private static List<SettingPair> settings = new List<SettingPair>();
+        public  static string            settings_file    = "settings.eb";
+        private static List<SettingPair> settings         = new List<SettingPair>();
 
-        private static void load_settings()
+        private static List<SettingPair> default_settings()
         {
+            return new List<SettingPair>()
+            {
+                new SettingPair("last_page", null),
+                new SettingPair("last_category", null)
+            };
+
+            //return null;
+        }
+
+        public static void load_settings()
+        {
+            if(!File.Exists(settings_file))
+            {
+                File.Create(settings_file).Close();
+
+                List<SettingPair> default_settings = Settings.default_settings();
+
+                if(default_settings != null)
+                {
+                    for(int i=0; i < default_settings.Count; i++)
+                        set_setting(default_settings[i].Key, default_settings[i].Value, true);
+                }
+
+                return;
+            }
+
             settings.Clear();
 
             string[] settings_content = File.ReadAllLines(settings_file);
@@ -47,7 +73,7 @@ namespace EB_Utility
             }
         }
 
-        private static T get_setting<T>(string key)
+        public static T get_setting<T>(string key)
         {
             for(int i=0; i < settings.Count; i++)
             {
@@ -71,25 +97,37 @@ namespace EB_Utility
                 }
             }
 
-            return default(T);
+            return default;
         }
 
-        private static void set_setting(string key, object value)
+        public static void set_setting(string key, object value, bool add_if_not_exist=false)
         {
+            if(value == null) value = "";
+            else value = value.ToString();
+
+            List<string> settings_content = new List<string>(File.ReadAllLines(settings_file));
+
             for(int i=0; i < settings.Count; i++)
             {
                 SettingPair setting = settings[i];
 
                 if(setting.Key == key)
                 {
-                    if(value == null) value = "";
-
-                    string[] settings_content = File.ReadAllLines(settings_file);
-                    settings_content[i] = key + "=" + value.ToString();
-                    File.WriteAllLines(settings_file, settings_content);
+                    settings_content[i] = key + "=" + value;
+                    File.WriteAllLines(settings_file, settings_content.ToArray());
                     
                     load_settings();
+                    return;
                 }
+            }
+
+            if(add_if_not_exist)
+            {
+                settings_content.Add(key + "=" + value);
+                File.WriteAllLines(settings_file, settings_content.ToArray());
+                    
+                load_settings();
+                return;
             }
         }
     }
