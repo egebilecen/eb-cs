@@ -171,7 +171,9 @@ namespace EB_Utility
 		public static MExcel.Application create_empty_excel_file(string path, bool close_excel=true)
         {
             MExcel.Application excel_app = new MExcel.Application();
-            excel_app.Visible = false;
+            excel_app.Visible = close_excel 
+                                ? false : Settings.get_setting<int>("excel_visible") == 1 
+                                          ? true : false;
 
             object misvalue = System.Reflection.Missing.Value;
 
@@ -197,7 +199,7 @@ namespace EB_Utility
         public static MExcel.Application create_excel_application()
         {
             MExcel.Application excel_app = new MExcel.Application();
-            excel_app.Visible = false;
+            excel_app.Visible = Settings.get_setting<int>("excel_visible") == 1 ? true : false;
             return excel_app;
         }
 
