@@ -78,18 +78,14 @@ namespace EB_Utility
                 if(pair.Key   == key
                 && pair.Value != "")
                 {
-                    if(typeof(T) == typeof(string))
-                        return (T)(object) pair.Value;
-                    if(typeof(T) == typeof(int))
-                        return (T)(object) int.Parse(pair.Value);
-                    if(typeof(T) == typeof(float))
-                        return (T)(object) float.Parse(pair.Value); 
-                    if(typeof(T) == typeof(double))
-                        return (T)(object) double.Parse(pair.Value); 
-                    if(typeof(T) == typeof(long))
-                        return (T)(object) long.Parse(pair.Value);
-
-                    throw new FormatException("Unsupported type "+(typeof(T)).ToString());
+                    try
+                    {
+                        return (T) Convert.ChangeType(pair.Value, typeof(T));
+                    }
+                    catch(InvalidCastException)
+                    {
+                        return default(T);
+                    }
                 }
             }
 
