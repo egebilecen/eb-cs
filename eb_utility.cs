@@ -36,26 +36,14 @@ namespace EB_Utility
     public static class Settings
     {
         public static string settings_file = "settings.eb";
+        public static List<SettingPair> default_settings = new List<SettingPair> { new SettingPair("excel_visible", "0") };
         private static List<SettingPair> settings = new List<SettingPair>();
-
-		private static List<SettingPair> default_settings()
-        {
-            return new List<SettingPair>()
-            {
-                new SettingPair("last_page", null),
-                new SettingPair("excel_visible", "0")
-            };
-
-            //return null;
-        }
 		
         public static void load_settings()
         {
             if(!File.Exists(settings_file))
             {
                 File.Create(settings_file).Close();
-
-                List<SettingPair> default_settings = Settings.default_settings();
 
                 if(default_settings != null)
                 {
