@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 
@@ -13,7 +13,7 @@ namespace EB_Utility
         public static List<SettingPair> default_settings = new List<SettingPair> { };
         private static List<SettingPair> settings = new List<SettingPair>();
 		
-        public static void load_settings()
+        public static void load()
         {
             if(!File.Exists(settings_file))
             {
@@ -82,7 +82,7 @@ namespace EB_Utility
                     settings_content[i] = key + "=" + value;
                     File.WriteAllLines(settings_file, settings_content.ToArray());
                     
-                    load_settings();
+                    load();
                     return;
                 }
             }
@@ -92,7 +92,7 @@ namespace EB_Utility
                 settings_content.Add(key + "=" + value);
                 File.WriteAllLines(settings_file, settings_content.ToArray());
                     
-                load_settings();
+                load();
                 return;
             }
         }
