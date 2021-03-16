@@ -1,4 +1,7 @@
-﻿using NPOI.XSSF.UserModel; // XLSX
+// NuGet Packet Requirements:
+// [+] NPOI by NPOI Contributors
+
+using NPOI.XSSF.UserModel; // XLSX
 using NPOI.HSSF.UserModel; // XLS
 using NPOI.SS.UserModel;
 using System.IO;
