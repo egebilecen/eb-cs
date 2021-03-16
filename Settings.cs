@@ -10,7 +10,7 @@ namespace EB_Utility
     public static class Settings
     {
         public static string settings_file = "settings.eb";
-        public static List<SettingPair> default_settings = new List<SettingPair> { new SettingPair("excel_visible", "0") };
+        public static List<SettingPair> default_settings = new List<SettingPair> { };
         private static List<SettingPair> settings = new List<SettingPair>();
 		
         public static void load_settings()
