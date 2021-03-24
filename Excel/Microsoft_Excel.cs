@@ -12,13 +12,13 @@
 
     if(!File.Exists(input_filename.Text+".xlsx"))
     {
-        excel_app = Microsoft_Excel.create_empty_excel_file(Directory.GetCurrentDirectory()+"\\"+input_filename.Text, false);
+        excel_app = Microsoft_Excel.create_empty_excel_file(Directory.GetCurrentDirectory()+"\\"+excel_file_name, false);
         excel_wb  = excel_app.Workbooks.get_Item(1);
     }
     else
     {
         excel_app = Microsoft_Excel.create_excel_application();
-        excel_wb  = Microsoft_Excel.open_excel_file(excel_app, Directory.GetCurrentDirectory()+"\\"+input_filename.Text);
+        excel_wb  = Microsoft_Excel.open_excel_file(excel_app, Directory.GetCurrentDirectory()+"\\"+excel_file_name);
     }
 
     excel_ws = (Excel.Worksheet) excel_wb.Worksheets.get_Item(1);
