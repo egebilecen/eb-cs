@@ -21,7 +21,7 @@
         excel_wb  = Microsoft_Excel.open_excel_file(excel_app, Directory.GetCurrentDirectory()+"\\"+input_filename.Text);
     }
 
-    excel_ws = excel_wb.Worksheets.get_Item(1);
+    excel_ws = (Excel.Worksheet) excel_wb.Worksheets.get_Item(1);
 
     excel_ws.Cells[1, 1] = "Test";
     excel_ws.Cells[1, 2] = "123";
@@ -32,7 +32,6 @@
     Microsoft_Excel.save_and_close_excel(excel_app, excel_wb);
 */
 
-using Microsoft.Office.Interop.Excel;
 using System;
 using System.Runtime.InteropServices;
 using _Excel     = Microsoft.Office.Interop.Excel;
@@ -84,7 +83,7 @@ namespace EB_Utility
             return excel_app.Workbooks.Open(path);
         }
 
-        public static void save_excel(Workbook excel_wb)
+        public static void save_excel(_Excel.Workbook excel_wb)
         {
             excel_wb.Save();
         }
