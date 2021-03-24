@@ -10,7 +10,7 @@
     private Excel.Workbook    excel_wb  = null;
     private Excel.Worksheet   excel_ws  = null;
 
-	if(!File.Exists(input_filename.Text+".xlsx"))
+    if(!File.Exists(input_filename.Text+".xlsx"))
     {
         excel_app = Microsoft_Excel.create_empty_excel_file(Directory.GetCurrentDirectory()+"\\"+input_filename.Text, false);
         excel_wb  = excel_app.Workbooks.get_Item(1);
@@ -60,7 +60,7 @@ namespace EB_Utility
 
             if(close_excel)
             {
-				wb.Close(true, misvalue, misvalue);
+                wb.Close(true, misvalue, misvalue);
                 excel_app.Quit();
                 return null;
             }
@@ -101,13 +101,13 @@ namespace EB_Utility
             excel_app.Quit();
             Marshal.ReleaseComObject(excel_app);
         }
-		
-		public static int get_last_row_in_worksheet(_Excel.Worksheet ws)
+        
+        public static int get_last_row_in_worksheet(_Excel.Worksheet ws)
         {
             return ws.Cells.SpecialCells(_Excel.XlCellType.xlCellTypeLastCell, Type.Missing).Row;
         }
-		
-		public static void append_to_worksheet(_Excel.Worksheet ws, string[] values, int offset_top=0, int offset_left=0)
+        
+        public static void append_to_worksheet(_Excel.Worksheet ws, string[] values, int offset_top=0, int offset_left=0)
         {
             int last_row = get_last_row_in_worksheet(ws);
 
@@ -117,8 +117,8 @@ namespace EB_Utility
                 ws.Cells[last_row + 1 + offset_top, i + 1 + offset_left] = value;
             }
         }
-		
-		public static void insert_image_to_cell(_Excel.Worksheet ws, string image_path, int row_index, int column_index, float width, float height)
+        
+        public static void insert_image_to_cell(_Excel.Worksheet ws, string image_path, int row_index, int column_index, float width, float height)
         {
             _Excel.Range range = (_Excel.Range) ws.Cells[row_index, column_index];
             float left = (float) (double) range.Left;
