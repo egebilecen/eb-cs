@@ -42,6 +42,7 @@ namespace EB_Utility
     public static class Microsoft_Excel
     {
         public static bool is_excel_visible = false;
+        public static Action<_Excel.Range, int, int> append_before_callback = null;
 
         public static _Excel.Application create_empty_excel_file(string path, bool close_excel=true)
         {
@@ -103,8 +104,15 @@ namespace EB_Utility
 
             if(ws != null) Marshal.ReleaseComObject(ws);
 
-            excel_app.Quit();
-            Marshal.ReleaseComObject(excel_app);
+            try
+            {
+                if(excel_app != null)
+                {
+                    excel_app.Quit();
+                    Marshal.ReleaseComObject(excel_app);
+                }
+            }
+            catch (Exception) { }
         }
         
         public static int get_last_row_in_worksheet(_Excel.Worksheet ws)
@@ -118,8 +126,16 @@ namespace EB_Utility
 
             for(int i=0; i < values.Length; i++)
             {
+                int current_row = last_row + 1 + offset_top;
+                int current_col = i        + 1 + offset_left;
+
+                _Excel.Range cell = (_Excel.Range) ws.Cells[current_row, current_col];
+
+                if(append_before_callback != null)
+                    append_before_callback(cell, current_row, current_col);
+
                 string value = values[i];
-                ws.Cells[last_row + 1 + offset_top, i + 1 + offset_left] = value;
+                ws.Cells[current_row, current_col] = value;
             }
         }
         
