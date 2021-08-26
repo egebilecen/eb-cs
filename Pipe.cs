@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.IO.Pipes;
 
@@ -6,6 +6,7 @@ namespace EB_Utility
 {
     namespace Pipe
     {
+        // TODO
         public class NamedPipeServer
         {
             private string name;
@@ -65,6 +66,11 @@ namespace EB_Utility
 
                 this.client_stream.Read(this.buffer, 0, this.buffer_size);
                 return true;
+            }
+
+            public byte[] get_buffer()
+            {
+                return this.buffer;
             }
         }
     }
