@@ -4,6 +4,7 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Net;
 using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace EB_Utility
 {
@@ -31,16 +32,30 @@ namespace EB_Utility
             return httpClient;
         }
 
+        // TaskCanceledException     - Request timeouted
+        // InvalidOperationException - Invalid URL
+        public static async Task<string> GetAsync(HttpClient httpClient, string url)
+        {
+            HttpResponseMessage response;
+
+            response = await httpClient.GetAsync(url);
+
+            if(response.IsSuccessStatusCode)
+                return await response.Content.ReadAsStringAsync();
+
+            return "";
+        }
+
         public static void DownloadImage(string imageUrl, string filename, ImageFormat format)
         {    
             WebClient client = new WebClient();
-            Stream stream = client.OpenRead(imageUrl);
-            Bitmap bitmap;  bitmap = new Bitmap(stream);
+            Stream    stream = client.OpenRead(imageUrl);
 
-            if (bitmap != null)
-            {
+            Bitmap bitmap;  
+            bitmap = new Bitmap(stream);
+
+            if(bitmap != null)
                 bitmap.Save(filename, format);
-            }
 
             stream.Flush();
             stream.Close();
