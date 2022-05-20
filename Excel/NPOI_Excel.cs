@@ -58,15 +58,15 @@ namespace EB_Utility
             return ws.LastRowNum;
         }
 
-        public static void AppentToWorksheet(ISheet ws, string[] values, int offset_top=0, int offset_left=0)
+        public static void AppendToWorksheet(ISheet ws, string[] values, int offsetTop=0, int offsetLeft=0)
         {
-            int last_row  = GetLastRowInWorksheet(ws);
-            IRow curr_row = ws.CreateRow(last_row + 1 + offset_top);
+            int lastRow  = GetLastRowInWorksheet(ws);
+            IRow currRow = ws.CreateRow(lastRow + 1 + offsetTop);
 
             for(int i=0; i < values.Length; i++)
             {
                 string value = values[i];
-                curr_row.CreateCell(i + offset_left).SetCellValue(value);
+                currRow.CreateCell(i + offsetLeft).SetCellValue(value);
             }
         }
     }
