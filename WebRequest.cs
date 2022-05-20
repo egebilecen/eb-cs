@@ -43,7 +43,7 @@ namespace EB_Utility
             if(response.IsSuccessStatusCode)
                 return await response.Content.ReadAsStringAsync();
 
-            return "";
+            return null;
         }
 
         public static void DownloadImage(string imageUrl, string filename, ImageFormat format)
