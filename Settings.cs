@@ -9,20 +9,20 @@ namespace EB_Utility
 {
     public static class Settings
     {
-        public static string settings_file = "settings.eb";
-        public static List<SettingPair> default_settings = new List<SettingPair> { };
+        public static string settingsFile = "settings.eb";
+        public static List<SettingPair> defaultSettings = new List<SettingPair> { };
         private static List<SettingPair> settings = new List<SettingPair>();
 		
-        public static void load()
+        public static void Load()
         {
-            if(!File.Exists(settings_file))
+            if(!File.Exists(settingsFile))
             {
-                File.Create(settings_file).Close();
+                File.Create(settingsFile).Close();
 
-                if(default_settings != null)
+                if(defaultSettings != null)
                 {
-                    for(int i=0; i < default_settings.Count; i++)
-                        set_setting(default_settings[i].Key, default_settings[i].Value, true);
+                    for(int i=0; i < defaultSettings.Count; i++)
+                        SetSetting(defaultSettings[i].Key, defaultSettings[i].Value, true);
                 }
 
                 return;
@@ -30,20 +30,20 @@ namespace EB_Utility
 
             settings.Clear();
 
-            string[] settings_content = File.ReadAllLines(settings_file);
+            string[] settingsContent = File.ReadAllLines(settingsFile);
 
-            for(int i=0; i < settings_content.Length; i++)
+            for(int i=0; i < settingsContent.Length; i++)
             {
-                string   setting = settings_content[i];
-                string[] setting_split = setting.Split(new char[] { '=' }, 2);
+                string   setting = settingsContent[i];
+                string[] settingSplit = setting.Split(new char[] { '=' }, 2);
 
-                SettingPair pair = new SettingPair(setting_split[0], setting_split[1]);
+                SettingPair pair = new SettingPair(settingSplit[0], settingSplit[1]);
 
                 settings.Add(pair);
             }
         }
 
-        public static T get_setting<T>(string key)
+        public static T GetSetting<T>(string key)
         {
             for(int i=0; i < settings.Count; i++)
             {
@@ -54,7 +54,7 @@ namespace EB_Utility
                 {
                     try
                     {
-                        return (T) Convert.ChangeType(pair.Value, typeof(T));
+                        return (T)Convert.ChangeType(pair.Value, typeof(T));
                     }
                     catch(InvalidCastException)
                     {
@@ -66,12 +66,12 @@ namespace EB_Utility
             return default;
         }
 
-        public static void set_setting(string key, object value, bool add_if_not_exist=false)
+        public static void SetSetting(string key, object value, bool addIfNotExist=false)
         {
             if(value == null) value = "";
             else value = value.ToString();
 
-            List<string> settings_content = new List<string>(File.ReadAllLines(settings_file));
+            List<string> settings_content = new List<string>(File.ReadAllLines(settingsFile));
 
             for(int i=0; i < settings.Count; i++)
             {
@@ -80,19 +80,19 @@ namespace EB_Utility
                 if(setting.Key == key)
                 {
                     settings_content[i] = key + "=" + value;
-                    File.WriteAllLines(settings_file, settings_content.ToArray());
+                    File.WriteAllLines(settingsFile, settings_content.ToArray());
                     
-                    load();
+                    Load();
                     return;
                 }
             }
 
-            if(add_if_not_exist)
+            if(addIfNotExist)
             {
                 settings_content.Add(key + "=" + value);
-                File.WriteAllLines(settings_file, settings_content.ToArray());
+                File.WriteAllLines(settingsFile, settings_content.ToArray());
                     
-                load();
+                Load();
                 return;
             }
         }
