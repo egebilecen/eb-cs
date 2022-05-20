@@ -4,19 +4,19 @@ namespace EB_Utility
 {
     public static class Time
     {
-        private static TimeSpan get_epoch_time()
+        private static TimeSpan GetEpochTime()
         {
             return DateTime.Now.ToUniversalTime() - new DateTime(1970, 1, 1);
         }
 
-        public static long get_timestamp_sec()
+        public static long GetTimestampSec()
         {
-            return (long)get_epoch_time().TotalSeconds;
+            return (long)GetEpochTime().TotalSeconds;
         }
 
-        public static long get_timestamp_ms()
+        public static long GetTimestampMS()
         {
-            return (long)get_epoch_time().TotalMilliseconds;
+            return (long)GetEpochTime().TotalMilliseconds;
         }
     }
 }
