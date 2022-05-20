@@ -11,7 +11,7 @@ namespace EB_Utility
 {
     public static class NPOI_Excel
     {
-        public static IWorkbook open_excel_file(string path)
+        public static IWorkbook OpenExcelFile(string path)
         {
             IWorkbook wb;
             
@@ -28,7 +28,7 @@ namespace EB_Utility
             return wb;
         }
 
-        public static void save_excel(string path, IWorkbook wb)
+        public static void SaveExcel(string path, IWorkbook wb)
         {
             using(FileStream fs = new FileStream(path, FileMode.Create, FileAccess.Write))
             {
@@ -36,7 +36,7 @@ namespace EB_Utility
             }
         }
 
-        public static IWorkbook create_empty_excel_file(string path)
+        public static IWorkbook CreateEmptyExcelFile(string path)
         {
             IWorkbook wb;
 
@@ -53,14 +53,14 @@ namespace EB_Utility
             return wb;
         }
 
-        public static int get_last_row_in_worksheet(ISheet ws)
+        public static int GetLastRowInWorksheet(ISheet ws)
         {
             return ws.LastRowNum;
         }
 
-        public static void append_to_worksheet(ISheet ws, string[] values, int offset_top=0, int offset_left=0)
+        public static void AppentToWorksheet(ISheet ws, string[] values, int offset_top=0, int offset_left=0)
         {
-            int last_row  = get_last_row_in_worksheet(ws);
+            int last_row  = GetLastRowInWorksheet(ws);
             IRow curr_row = ws.CreateRow(last_row + 1 + offset_top);
 
             for(int i=0; i < values.Length; i++)
