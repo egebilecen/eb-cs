@@ -1,14 +1,19 @@
-﻿using System;
+using System;
 using System.IO;
 
 namespace EB_Utility
 {
     public static class Logger
     {
-        public static string log_file   = "program_log.eb";
-        public static string error_file = "error.eb";
+        public static void Log(string text, string filename = "program.log")
+        {
+            string ex_msg = text +
+                            "\nDate: "+DateTime.Now.ToString("dd/MM/yyyy, HH:mm:ss") +
+                            "\n---------------\n";
+            File.AppendAllText(filename, ex_msg);
+        }
 
-        public static void log_exception(Exception ex, string additional_msg="")
+        public static void LogException(Exception ex, string additional_msg="", string filename = "program.log")
         {
             string ex_msg = "Exception: "+ex.GetType().FullName +
                             "\nMessage: "+ex.Message +
@@ -16,7 +21,7 @@ namespace EB_Utility
                             "\nDate: "+DateTime.Now.ToString("dd/MM/yyyy, HH:mm:ss") +
                             (additional_msg != "" ? "\n"+additional_msg : "") +
                             "\n---------------\n";
-            File.AppendAllText(error_file, ex_msg);
+            File.AppendAllText(filename, ex_msg);
         }
     }
 }
