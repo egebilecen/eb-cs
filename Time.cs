@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace EB_Utility
 {
@@ -11,12 +11,12 @@ namespace EB_Utility
 
         public static long get_timestamp_sec()
         {
-            return (long) get_epoch_time().TotalSeconds;
+            return (long)get_epoch_time().TotalSeconds;
         }
 
         public static long get_timestamp_ms()
         {
-            return (long) get_epoch_time().TotalMilliseconds;
+            return (long)get_epoch_time().TotalMilliseconds;
         }
     }
 }
