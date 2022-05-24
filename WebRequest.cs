@@ -46,7 +46,7 @@ namespace EB_Utility
             return null;
         }
 
-        public static void DownloadImage(string imageUrl, string filename, ImageFormat format)
+        public static bool DownloadImage(string imageUrl, string filename, ImageFormat format)
         {    
             WebClient client = new WebClient();
             Stream    stream = client.OpenRead(imageUrl);
@@ -60,6 +60,8 @@ namespace EB_Utility
             stream.Flush();
             stream.Close();
             client.Dispose();
+
+            return File.Exists(filename);
         }
     }
 }
