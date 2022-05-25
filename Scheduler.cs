@@ -58,7 +58,7 @@ public static class Scheduler
         return scheduleItems.Find(item => item.Name == name);
     }
 
-    private static async void ClockElapsed(object sender, ElapsedEventArgs e)
+    private static void ClockElapsed(object sender, ElapsedEventArgs e)
     {
         DateTime now = DateTime.Now;
 
