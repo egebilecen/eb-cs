@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,22 +10,22 @@ public class ScheduleItem
     public string               Name            { get; }
     public Action<List<object>> Function        { get; }
     public List<object>         Args            { get; set; }
-    public ulong                IntervalMinute  { get; set; }
+    public ulong                IntervalMS      { get; set; }
     public DateTime             NextExecuteTime { get; set; }
 
-    public ScheduleItem(string name, ulong intervalMinute, Action<List<object>> func, List<object> args)
+    public ScheduleItem(string name, ulong intervalMS, Action<List<object>> func, List<object> args)
     {
         Name           = name;
         Function       = func;
         Args           = args;
 
-        UpdateInterval(intervalMinute);
+        UpdateInterval(intervalMS);
     }
 
-    public void UpdateInterval(ulong intervalMinute=0)
+    public void UpdateInterval(ulong intervalMS=0)
     {
-        if(intervalMinute > 0) IntervalMinute = intervalMinute;
-        NextExecuteTime = DateTime.Now.AddMinutes(IntervalMinute);
+        if(intervalMS > 0) IntervalMS = intervalMS;
+        NextExecuteTime = DateTime.Now.AddMilliseconds(IntervalMS);
     }
 }
 
@@ -34,7 +34,7 @@ public static class Scheduler
     private static Timer clock;
     private static List<ScheduleItem> scheduleItems = new List<ScheduleItem>();
 
-    public static void Start(long intervalMS)
+    public static void Start(ulong intervalMS)
     {
         clock = new Timer();
         clock.Interval = intervalMS;
