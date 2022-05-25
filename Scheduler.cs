@@ -38,7 +38,7 @@ public static class Scheduler
     {
         clock = new Timer();
         clock.Interval = intervalMS;
-        clock.Elapsed += ClockElapsed;
+        clock.Elapsed += new ElapsedEventHandler(ClockElapsed);
         clock.Start();
     }
 
@@ -58,7 +58,7 @@ public static class Scheduler
         return scheduleItems.Find(item => item.Name == name);
     }
 
-    private static void ClockElapsed(object sender, ElapsedEventArgs e)
+    private static async void ClockElapsed(object sender, ElapsedEventArgs e)
     {
         DateTime now = DateTime.Now;
 
