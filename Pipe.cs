@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.IO.Pipes;
 using System.Linq;
+using System.Threading;
 
 namespace EB_Utility
 {
@@ -12,7 +13,6 @@ namespace EB_Utility
             private string name;
             private byte[] buffer;
             private int    buffer_size;
-            private Action<byte[]> data_handler = null;
             private NamedPipeServerStream server_stream;
 
             public NamedPipeServer(string name, int buffer_size=256)
@@ -24,25 +24,28 @@ namespace EB_Utility
 
             public void start()
             {
-                if(this.data_handler == null)
-                    throw new Exception("data_handler is null.");
-
                 this.server_stream = new NamedPipeServerStream(name, PipeDirection.InOut);
                 this.server_stream.WaitForConnection();
-
-                while(this.server_stream.IsConnected)
-                {
-                    int recv = this.server_stream.Read(this.buffer, 0, this.buffer_size);
-                    if(recv > 0) this.data_handler(this.buffer.Take(recv).ToArray());
-                }
-
-                this.server_stream.Close();
-                this.start();
             }
 
-            public void set_data_handler(Action<byte[]> func)
+            public void read(Action<byte[]> callback)
             {
-                this.data_handler = func;
+                if(!this.server_stream.IsConnected) return;
+
+                int recv = this.server_stream.Read(this.buffer, 0, this.buffer_size);
+                if(recv > 0) callback(this.buffer.Take(recv).ToArray());
+            }
+
+            public void write(byte[] data)
+            {
+                if(!this.server_stream.IsConnected) return;
+
+                this.server_stream.Write(data, 0, data.Length);
+            }
+
+            public bool is_connected()
+            { 
+                return this.server_stream.IsConnected; 
             }
         }
 
@@ -80,6 +83,15 @@ namespace EB_Utility
                 return true;
             }
 
+            // Can't write while read in progress
+            public bool read()
+            {
+                if(!this.client_stream.IsConnected) return false;
+
+                this.client_stream.Read(this.buffer, 0, this.buffer_size);
+                return true;
+            }
+
             public bool write(byte[] bytes)
             {
                 if(!this.client_stream.IsConnected) return false;
@@ -89,17 +101,9 @@ namespace EB_Utility
                 return true;
             }
 
-            public bool read()
-            {
-                if(!this.client_stream.IsConnected) return false;
-
-                this.client_stream.Read(this.buffer, 0, this.buffer_size);
-                return true;
-            }
-
-            public byte[] get_buffer()
-            {
-                return this.buffer;
+            public bool is_connected()
+            { 
+                return this.client_stream.IsConnected; 
             }
         }
     }
