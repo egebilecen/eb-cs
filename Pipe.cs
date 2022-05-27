@@ -1,19 +1,48 @@
 using System;
 using System.IO;
 using System.IO.Pipes;
+using System.Linq;
 
 namespace EB_Utility
 {
     namespace Pipe
     {
-        // TODO
         public class NamedPipeServer
         {
             private string name;
+            private byte[] buffer;
+            private int    buffer_size;
+            private Action<byte[]> data_handler = null;
+            private NamedPipeServerStream server_stream;
 
-            public NamedPipeServer(string name)
+            public NamedPipeServer(string name, int buffer_size=256)
             {
                 this.name = name;
+                this.buffer_size = buffer_size;
+                this.buffer = new byte[buffer_size];
+            }
+
+            public void start()
+            {
+                if(this.data_handler == null)
+                    throw new Exception("data_handler is null.");
+
+                this.server_stream = new NamedPipeServerStream(name, PipeDirection.InOut);
+                this.server_stream.WaitForConnection();
+
+                while(this.server_stream.IsConnected)
+                {
+                    int recv = this.server_stream.Read(this.buffer, 0, this.buffer_size);
+                    if(recv > 0) this.data_handler(this.buffer.Take(recv).ToArray());
+                }
+
+                this.server_stream.Close();
+                this.start();
+            }
+
+            public void set_data_handler(Action<byte[]> func)
+            {
+                this.data_handler = func;
             }
         }
 
