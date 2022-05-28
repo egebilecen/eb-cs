@@ -14,12 +14,14 @@ namespace EB_Utility
             private int    buffer_size;
             private Action<byte[]> data_handler = null;
             private NamedPipeServerStream server_stream;
+            private bool read = true;
 
-            public NamedPipeServer(string name, int buffer_size=256)
+            public NamedPipeServer(string name, bool read, int buffer_size=256)
             {
                 this.name = name;
                 this.buffer_size = buffer_size;
                 this.buffer = new byte[buffer_size];
+                this.read = read;
             }
 
             public void set_data_handler(Action<byte[]> func)
@@ -29,7 +31,8 @@ namespace EB_Utility
 
             public void start()
             {
-                if(this.data_handler == null)
+                if(this.data_handler == null
+                && read)
                     throw new Exception("data_handler is null.");
 
                 this.server_stream = new NamedPipeServerStream(name, PipeDirection.InOut);
@@ -37,8 +40,11 @@ namespace EB_Utility
 
                 while(this.server_stream.IsConnected)
                 {
-                    int recv = this.server_stream.Read(this.buffer, 0, this.buffer_size);
-                    if(recv > 0) this.data_handler(this.buffer.Take(recv).ToArray());
+                    if(this.read)
+                    {
+                        int recv = this.server_stream.Read(this.buffer, 0, this.buffer_size);
+                        if(recv > 0) this.data_handler(this.buffer.Take(recv).ToArray());
+                    }
                 }
 
                 this.server_stream.Close();
