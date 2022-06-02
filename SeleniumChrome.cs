@@ -1,3 +1,7 @@
+// NuGet Packet Requirements:
+// [+] Selenium.WebDriver by Selenium Committers
+// [+] DotNetSeleniumExtras.WaitHelpers by SeleniumExtras.WaitHelpers
+
 using System;
 using System.Diagnostics;
 using System.Threading;
