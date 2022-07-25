@@ -2,7 +2,7 @@ using System;
 using System.Net;
 using System.Net.Mail;
 
-class SMTPMailer
+public class SMTPMailer
 {
     readonly string smtpHost;
     readonly int    smtpPort;
@@ -40,7 +40,7 @@ class SMTPMailer
         return mailMessage;
     }
 
-    private bool SendMail(MailMessage mailMessage)
+    public bool SendMail(MailMessage mailMessage)
     {
         using(var smtpClient = new SmtpClient(smtpHost, smtpPort))
         {
@@ -59,6 +59,13 @@ class SMTPMailer
 
             return false;
         }
+    }
+
+    public MailMessage CreateMailMessage(string toAddr, string subject, string body, bool isHTML=true)
+    {
+        MailMessage mailMessage = CreateMailMessage(subject, body, isHTML);
+        mailMessage.To.Add(toAddr);
+        return mailMessage;
     }
 
     public bool Send(string toAddr, string subject, string body, bool isHTML=true)
