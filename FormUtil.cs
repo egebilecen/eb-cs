@@ -1,4 +1,5 @@
-﻿using System.Windows.Forms;
+using System;
+using System.Windows.Forms;
 
 namespace EB_Utility
 {
@@ -22,10 +23,47 @@ namespace EB_Utility
             if(maxUpdated) progressBar.Maximum--;
         }
 
+        public static void UpdateProgressBarInvoke(ProgressBar progressBar, int value)
+        {
+            bool maxUpdated = false;
+
+            if(value + 1 > progressBar.Maximum)
+            {
+                progressBar.Invoke(new Action(() => {
+                    progressBar.Maximum++;
+                }));
+                maxUpdated = true;
+            }
+
+            progressBar.Invoke(new Action(() => {
+                progressBar.Value = value + 1;
+            }));
+            progressBar.Invoke(new Action(() => {
+                progressBar.Value--;
+            }));
+
+            if(maxUpdated)
+            { 
+                progressBar.Invoke(new Action(() => {
+                    progressBar.Maximum--;
+                }));
+            }
+        }
+
         public static void ResetProgressBar(ProgressBar progressBar, int maxValue)
         {
             progressBar.Value   = 0;
             progressBar.Maximum = maxValue;
+        }
+
+        public static void ResetProgressBarInvoke(ProgressBar progressBar, int maxValue)
+        {
+            progressBar.Invoke(new Action(() => {
+                progressBar.Value = 0;
+            }));
+            progressBar.Invoke(new Action(() => {
+                progressBar.Maximum = maxValue;
+            }));
         }
         
         public static void DisplayHidingText(Label label, string text, int durationMS=0)
