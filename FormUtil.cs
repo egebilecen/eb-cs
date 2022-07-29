@@ -6,6 +6,42 @@ namespace EB_Utility
     public static class FormUtil
     {
         private static Timer labelTimer = new Timer();
+        
+        public static string ShowOpenFileDialog(string title, string filter="")
+        {
+            OpenFileDialog fileDialog = new OpenFileDialog();
+            fileDialog.Title  = title;
+            fileDialog.Filter = filter;
+
+            DialogResult dialogResult = fileDialog.ShowDialog();
+
+            if(dialogResult == DialogResult.Cancel)
+                throw new CustomException.Abort("User did close the dialog.");
+
+            if(dialogResult == DialogResult.OK
+            && fileDialog.FileName != string.Empty)
+                return fileDialog.FileName;
+
+            return string.Empty;
+        }
+
+        public static string ShowSaveFileDialog(string title, string filter="")
+        {
+            SaveFileDialog fileDialog = new SaveFileDialog();
+            fileDialog.Title  = title;
+            fileDialog.Filter = filter;
+
+            DialogResult dialogResult = fileDialog.ShowDialog();
+
+            if(dialogResult == DialogResult.Cancel)
+                throw new CustomException.Abort("User did close the dialog.");
+
+            if(dialogResult == DialogResult.OK
+            && fileDialog.FileName != string.Empty)
+                return fileDialog.FileName;
+
+            return string.Empty;
+        }
 
         public static void UpdateProgressBar(ProgressBar progressBar, int value)
         {
