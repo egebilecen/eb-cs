@@ -16,7 +16,7 @@ namespace EB_Utility
             DialogResult dialogResult = fileDialog.ShowDialog();
 
             if(dialogResult == DialogResult.Cancel)
-                throw new CustomException.Abort("User did close the dialog.");
+                throw new Exception("User did close the dialog.");
 
             if(dialogResult == DialogResult.OK
             && fileDialog.FileName != string.Empty)
@@ -34,7 +34,7 @@ namespace EB_Utility
             DialogResult dialogResult = fileDialog.ShowDialog();
 
             if(dialogResult == DialogResult.Cancel)
-                throw new CustomException.Abort("User did close the dialog.");
+                throw new Exception("User did close the dialog.");
 
             if(dialogResult == DialogResult.OK
             && fileDialog.FileName != string.Empty)
