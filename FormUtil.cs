@@ -30,11 +30,16 @@ namespace EB_Utility
             return string.Empty;
         }
 
-        public static string ShowSaveFileDialog(string title, string filter="")
+        public static string ShowSaveFileDialog(string title, string filter="", string initialDirectory="")
         {
-            SaveFileDialog fileDialog = new SaveFileDialog();
-            fileDialog.Title  = title;
-            fileDialog.Filter = filter;
+            SaveFileDialog fileDialog = new SaveFileDialog
+            {
+                Title  = title,
+                Filter = filter
+            };
+
+            if(!string.IsNullOrEmpty(initialDirectory))
+                fileDialog.InitialDirectory = initialDirectory;
 
             DialogResult dialogResult = fileDialog.ShowDialog();
 
