@@ -22,6 +22,11 @@ namespace EB_Utility
         {
             return Process.GetCurrentProcess().MainModule.FileName;
         }
+        
+        public static string GetFilePathWithoutFileName()
+        {
+            return Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName);
+        }
 
         // Project > References > Add Reference > COM > Windows Script Host Object Model
         public static void AddToStartup()
