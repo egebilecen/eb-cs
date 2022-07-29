@@ -87,9 +87,9 @@ namespace EB_Utility
             return Registry.CurrentUser.OpenSubKey(subKey) == null;
         }
         
-        public static void OpenPathInExplorer(string filePath)
+        public static void OpenPathInExplorer(string path)
         {
-            Process.Start(Path.GetDirectoryName(filePath));
+            Process.Start(path);
         }
     }
 }
