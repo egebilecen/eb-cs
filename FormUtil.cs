@@ -7,11 +7,16 @@ namespace EB_Utility
     {
         private static Timer labelTimer = new Timer();
         
-        public static string ShowOpenFileDialog(string title, string filter="")
+        public static string ShowOpenFileDialog(string title, string filter="", string initialDirectory="")
         {
-            OpenFileDialog fileDialog = new OpenFileDialog();
-            fileDialog.Title  = title;
-            fileDialog.Filter = filter;
+            OpenFileDialog fileDialog = new OpenFileDialog
+            {
+                Title = title,
+                Filter = filter
+            };
+            
+            if(!string.IsNullOrEmpty(initialDirectory))
+                fileDialog.InitialDirectory = initialDirectory;
 
             DialogResult dialogResult = fileDialog.ShowDialog();
 
