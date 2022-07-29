@@ -86,5 +86,10 @@ namespace EB_Utility
             Registry.CurrentUser.DeleteSubKeyTree(subKey);
             return Registry.CurrentUser.OpenSubKey(subKey) == null;
         }
+        
+        public static void OpenPathInExplorer(string filePath)
+        {
+            Process.Start(Path.GetDirectoryName(filePath));
+        }
     }
 }
