@@ -7,12 +7,13 @@ namespace EB_Utility
     {
         private static Timer labelTimer = new Timer();
         
-        public static string ShowOpenFileDialog(string title, string filter="", string initialDirectory="")
+        public static string ShowOpenFileDialog(string title, string filter="", string initialDirectory="", string initialFileName="")
         {
             OpenFileDialog fileDialog = new OpenFileDialog
             {
-                Title = title,
-                Filter = filter
+                Title    = title,
+                Filter   = filter,
+                FileName = initialFileName
             };
             
             if(!string.IsNullOrEmpty(initialDirectory))
@@ -30,12 +31,13 @@ namespace EB_Utility
             return string.Empty;
         }
 
-        public static string ShowSaveFileDialog(string title, string filter="", string initialDirectory="")
+        public static string ShowSaveFileDialog(string title, string filter="", string initialDirectory="", string initialFileName="")
         {
             SaveFileDialog fileDialog = new SaveFileDialog
             {
-                Title  = title,
-                Filter = filter
+                Title    = title,
+                Filter   = filter,
+                FileName = initialFileName
             };
 
             if(!string.IsNullOrEmpty(initialDirectory))
