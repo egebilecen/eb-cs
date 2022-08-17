@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
@@ -36,9 +37,20 @@ namespace EB_Utility
         // InvalidOperationException - Invalid URL
         public static async Task<string> GetAsync(HttpClient httpClient, string url)
         {
-            HttpResponseMessage response;
+            HttpResponseMessage response = await httpClient.GetAsync(url);
 
-            response = await httpClient.GetAsync(url);
+            if(response.IsSuccessStatusCode)
+                return await response.Content.ReadAsStringAsync();
+
+            return null;
+        }
+        
+        // TaskCanceledException     - Request timeouted
+        // InvalidOperationException - Invalid URL
+        public static async Task<string> PostAsync(HttpClient httpClient, string url, List<KeyValuePair<string, string>> paramList)
+        {
+            var content = new FormUrlEncodedContent(paramList);
+            HttpResponseMessage response = await httpClient.PostAsync(url, content);
 
             if(response.IsSuccessStatusCode)
                 return await response.Content.ReadAsStringAsync();
