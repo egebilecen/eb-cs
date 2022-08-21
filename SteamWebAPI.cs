@@ -59,7 +59,7 @@ namespace EB_Utility
             }
         }
 
-        private static HttpClient httpClient = WebRequest.CreateHTTPClient();
+        private static HttpClient httpClient = WebRequest.CreateHTTPClient(connectionTimeout:60);
         private static string     baseAPIURL = "https://api.steampowered.com/";
 
         public static async Task<List<Model.WorkshopItemDetails>> GetWorkshopItemDetails(string[] idList)
@@ -73,8 +73,8 @@ namespace EB_Utility
 
             for(int i=0; i < idList.Length; i++)
             {
-                var id = idList[i];
-                parameters.Add(new KeyValuePair<string, string>("publishedfileids["+i.ToString()+"]", id.ToString()));
+                string workshopItemId = idList[i];
+                parameters.Add(new KeyValuePair<string, string>("publishedfileids["+i.ToString()+"]", workshopItemId));
             }
 
             string res = await WebRequest.PostAsync(httpClient, baseAPIURL + apiModule, parameters);
