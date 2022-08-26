@@ -25,7 +25,7 @@ namespace EB_Utility
         
         public static string GetFilePathWithoutFileName()
         {
-            return Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName);
+            return Path.GetDirectoryName(GetFilePath());
         }
 
         // Project > References > Add Reference > COM > Windows Script Host Object Model
