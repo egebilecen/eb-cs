@@ -7,6 +7,7 @@ namespace EB_Utility
     {
         private static Timer labelTimer = new Timer();
         
+        // Filter: Text Files|*.txt|Image Files|*.jpg;*.jpeg;*.png;*.gif;*.tif
         public static string ShowOpenFileDialog(string title, string filter="", string initialDirectory="", string initialFileName="")
         {
             OpenFileDialog fileDialog = new OpenFileDialog
@@ -31,6 +32,7 @@ namespace EB_Utility
             return string.Empty;
         }
 
+        // Filter: Text Files|*.txt|Image Files|*.jpg;*.jpeg;*.png;*.gif;*.tif
         public static string ShowSaveFileDialog(string title, string filter="", string initialDirectory="", string initialFileName="")
         {
             SaveFileDialog fileDialog = new SaveFileDialog
