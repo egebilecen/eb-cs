@@ -5,15 +5,25 @@ namespace EB_Utility
 {
     public static class StringUtil
     {
-        public static string CreateUniqueString()
+        public static string CreateUniqueString(bool base64=false, bool replaceBase64SpecialChars=false)
         {
             Guid g = Guid.NewGuid();
 
-            string uniqueString = Convert.ToBase64String(g.ToByteArray());
-            uniqueString = uniqueString.Replace("=","");
-            uniqueString = uniqueString.Replace("+","");
+            if(base64)
+            {
+                string uniqueString = Convert.ToBase64String(g.ToByteArray());
+                
+                if(replaceBase64SpecialChars)
+                {
+                    uniqueString = uniqueString.Replace("=", "");
+                    uniqueString = uniqueString.Replace("+", "");
+                    uniqueString = uniqueString.Replace("/", "");
+                }
 
-            return uniqueString;
+                return uniqueString;
+            }
+
+            return g.ToString();
         }
 
         public static string CreateRandomString(int size)
@@ -29,6 +39,21 @@ namespace EB_Utility
             }
 
             return builder.ToString();
+        }
+
+        public static bool IsValidVariableName(string text)
+        {
+            if(string.IsNullOrEmpty(text))
+                return false;
+
+            if(!char.IsLetter(text[0]) && text[0] != '_')
+                return false;
+
+            for(int ix = 1; ix < text.Length; ++ix)
+                if(!char.IsLetterOrDigit(text[ix]) && text[ix] != '_')
+                   return false;
+            
+            return true;
         }
     }
 }
