@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Timers;
@@ -66,7 +66,8 @@ namespace EB_Utility
             {
                 if(now >= item.NextExecuteTime)
                 {
-                    item.Function(item.Args);
+                    try { item.Function(item.Args); }
+                    catch(Exception ex) { Logger.LogException(ex, "Exception occured in ScheduleItem callback function. ScheduleItem: "+item.Name); }
                     item.UpdateInterval();
                 }
             }
@@ -140,7 +141,8 @@ namespace EB_Utility
             {
                 if(now >= item.NextExecuteTime)
                 {
-                    await item.Function(item.Args);
+                    try { await item.Function(item.Args); }
+                    catch(Exception ex) { Logger.LogException(ex, "Exception occured in ScheduleItem callback function. ScheduleItem: "+item.Name); }
                     item.UpdateInterval();
                 }
             }
