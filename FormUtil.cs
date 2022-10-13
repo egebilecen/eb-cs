@@ -57,8 +57,20 @@ namespace EB_Utility
             return string.Empty;
         }
 
-        public static void UpdateProgressBar(ProgressBar progressBar, int value)
+        // If canOverflow is false, then this function will throw exception if you try to assign
+        // a value greater than progress bar's maximum value.
+        public static void UpdateProgressBar(ProgressBar progressBar, int value, bool canOverflow=true)
         {
+            if(canOverflow
+            && value - 1 >= progressBar.Maximum)
+            {
+                progressBar.Maximum++;
+                progressBar.Value = progressBar.Maximum;
+                progressBar.Value--;
+                progressBar.Maximum--;
+                return;
+            }
+
             bool maxUpdated = false;
 
             if(value + 1 > progressBar.Maximum)
@@ -73,8 +85,22 @@ namespace EB_Utility
             if(maxUpdated) progressBar.Maximum--;
         }
 
-        public static void UpdateProgressBarInvoke(ProgressBar progressBar, int value)
+        // If canOverflow is false, then this function will throw exception if you try to assign
+        // a value greater than progress bar's maximum value.
+        public static void UpdateProgressBarInvoke(ProgressBar progressBar, int value, bool canOverflow=true)
         {
+            if(canOverflow
+            && value - 1 >= progressBar.Maximum)
+            {
+                progressBar.Invoke(new Action(() => {
+                    progressBar.Maximum++;
+                    progressBar.Value = progressBar.Maximum;
+                    progressBar.Value--;
+                    progressBar.Maximum--;
+                }));
+                return;
+            }
+
             bool maxUpdated = false;
 
             if(value + 1 > progressBar.Maximum)
@@ -100,20 +126,24 @@ namespace EB_Utility
             }
         }
 
-        public static void ResetProgressBar(ProgressBar progressBar, int maxValue)
+        public static void ResetProgressBar(ProgressBar progressBar, int? maxValue=null)
         {
             progressBar.Value   = 0;
-            progressBar.Maximum = maxValue;
+            
+            if(maxValue != null)
+                progressBar.Maximum = (int)maxValue;
         }
 
-        public static void ResetProgressBarInvoke(ProgressBar progressBar, int maxValue)
+        public static void ResetProgressBarInvoke(ProgressBar progressBar, int? maxValue=null)
         {
             progressBar.Invoke(new Action(() => {
                 progressBar.Value = 0;
             }));
-            progressBar.Invoke(new Action(() => {
-                progressBar.Maximum = maxValue;
-            }));
+
+            if(maxValue != null)
+                progressBar.Invoke(new Action(() => {
+                    progressBar.Maximum = (int)maxValue;
+                }));
         }
         
         public static void DisplayHidingText(Label label, string text, int durationMS=0)
