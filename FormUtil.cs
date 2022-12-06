@@ -164,5 +164,10 @@ namespace EB_Utility
                 labelTimer.Start();
             }
         }
+
+        public static void InvokeControl(Control control, Action<Control> action)
+        {
+            control.Invoke(new Action(() => action(control)));
+        }
     }
 }
