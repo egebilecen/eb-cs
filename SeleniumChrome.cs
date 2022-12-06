@@ -10,7 +10,7 @@ using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Support.UI;
 using SeleniumExtras.WaitHelpers;
 
-class SeleniumChrome
+public class SeleniumChrome
 {
     public ChromeDriver driver = null;
 
@@ -104,7 +104,7 @@ class SeleniumChrome
 
     public int GetCurrentTimestamp()
     {
-        return (int) (DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
+        return (int) DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
     }
 
     public IWebElement GetParent(IWebElement e)
