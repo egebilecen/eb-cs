@@ -37,27 +37,31 @@ namespace EB_Utility
 
         // TaskCanceledException     - Request timeouted
         // InvalidOperationException - Invalid URL
-        public static async Task<string> GetAsync(HttpClient httpClient, string url)
+        // return: (<status code>, <nullable response string>)
+        public static async Task<(int, string)> GetAsync(HttpClient httpClient, string url)
         {
             HttpResponseMessage response = await httpClient.GetAsync(url);
+            int responseCode = (int)response.StatusCode;
 
             if(response.IsSuccessStatusCode)
-                return await response.Content.ReadAsStringAsync();
+                return (responseCode, await response.Content.ReadAsStringAsync());
 
-            return null;
+            return (responseCode, null);
         }
         
         // TaskCanceledException     - Request timeouted
         // InvalidOperationException - Invalid URL
-        public static async Task<string> PostAsync(HttpClient httpClient, string url, List<KeyValuePair<string, string>> paramList)
+        // return: (<status code>, <nullable response string>)
+        public static async Task<(int, string)> PostAsync(HttpClient httpClient, string url, List<KeyValuePair<string, string>> paramList)
         {
             var content = new FormUrlEncodedContent(paramList);
             HttpResponseMessage response = await httpClient.PostAsync(url, content);
+            int responseCode = (int)response.StatusCode;
 
             if(response.IsSuccessStatusCode)
-                return await response.Content.ReadAsStringAsync();
+                return (responseCode, await response.Content.ReadAsStringAsync());
 
-            return null;
+            return (responseCode, null);
         }
 
         public static bool DownloadImage(string imageUrl, string filename, ImageFormat format)
