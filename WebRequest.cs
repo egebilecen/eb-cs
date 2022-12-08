@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
@@ -14,21 +13,24 @@ namespace EB_Utility
         public static HttpClient CreateHTTPClient(double connectionTimeout=10.0, string userAgent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36")
         {
             CookieContainer cookieContainer     = new CookieContainer();
-            HttpClientHandler httpClientHandler = new HttpClientHandler()
+            HttpClientHandler httpClientHandler = new HttpClientHandler
             {
-                AutomaticDecompression = DecompressionMethods.GZip 
-                                       | DecompressionMethods.Deflate
+                AutomaticDecompression = DecompressionMethods.GZip
+                                       | DecompressionMethods.Deflate,
+                AllowAutoRedirect = true,
+                UseCookies = true,
+                CookieContainer = cookieContainer
             };
 
-            httpClientHandler.AllowAutoRedirect = true;
-            httpClientHandler.UseCookies        = true;
-            httpClientHandler.CookieContainer   = cookieContainer;
+            HttpClient httpClient = new HttpClient(httpClientHandler)
+            {
+                Timeout = TimeSpan.FromSeconds(connectionTimeout)
+            };
 
-            HttpClient httpClient = new HttpClient(httpClientHandler);
-            httpClient.Timeout = TimeSpan.FromSeconds(connectionTimeout);
             httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(userAgent);
             httpClient.DefaultRequestHeaders.Add("Connection", "keep-alive");
             httpClient.DefaultRequestHeaders.Add("Keep-Alive", "600");
+            // httpClient.DefaultRequestHeaders.Add("x-requested-with", "XMLHttpRequest");
 
             return httpClient;
         }
@@ -66,8 +68,7 @@ namespace EB_Utility
             Bitmap bitmap;  
             bitmap = new Bitmap(stream);
 
-            if(bitmap != null)
-                bitmap.Save(filename, format);
+            bitmap?.Save(filename, format);
 
             stream.Flush();
             stream.Close();
