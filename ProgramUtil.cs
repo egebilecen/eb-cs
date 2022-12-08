@@ -27,6 +27,17 @@ namespace EB_Utility
         {
             return Path.GetDirectoryName(GetFilePath());
         }
+        
+        public async Task DelayAsync(int ms)
+        {
+            var time = DateTime.Now;
+
+            while(true) // use a variable if want to break early
+            {
+                if(DateTime.Now.Subtract(time).TotalMilliseconds >= ms) break;
+                await Task.Delay(100);
+            }
+        }
 
         // Project > References > Add Reference > COM > Windows Script Host Object Model
         public static void AddToStartup()
