@@ -55,5 +55,12 @@ namespace EB_Utility
             
             return true;
         }
+        
+        private bool IsValidURL(string url)
+        {
+            return Uri.TryCreate(url, UriKind.Absolute, out var uriResult)
+                && (uriResult.Scheme == Uri.UriSchemeHttp 
+                    || uriResult.Scheme == Uri.UriSchemeHttps);
+        }
     }
 }
