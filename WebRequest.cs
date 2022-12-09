@@ -43,7 +43,8 @@ namespace EB_Utility
             HttpResponseMessage response = await httpClient.GetAsync(url);
             
             int responseCode = (int)response.StatusCode;
-            string responseContent = await response.Content.ReadAsStringAsync();
+            byte[] buffer = await response.Content.ReadAsByteArrayAsync();
+            string responseContent = Encoding.UTF8.GetString(buffer, 0, buffer.Length);
 
             return (responseCode, responseContent);
         }
@@ -57,7 +58,8 @@ namespace EB_Utility
             HttpResponseMessage response = await httpClient.PostAsync(url, content);
             
             int responseCode = (int)response.StatusCode;
-            string responseContent = await response.Content.ReadAsStringAsync();
+            byte[] buffer = await response.Content.ReadAsByteArrayAsync();
+            string responseContent = Encoding.UTF8.GetString(buffer, 0, buffer.Length);
 
             return (responseCode, responseContent);
         }
