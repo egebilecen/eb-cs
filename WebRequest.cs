@@ -10,7 +10,7 @@ namespace EB_Utility
 {
     public static class WebRequest
     {
-        public static HttpClient CreateHTTPClient(double connectionTimeout=10.0, string userAgent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36")
+        public static HttpClient CreateHTTPClient(double connectionTimeout=10.0, string userAgent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36")
         {
             CookieContainer cookieContainer     = new CookieContainer();
             HttpClientHandler httpClientHandler = new HttpClientHandler
