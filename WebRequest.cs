@@ -41,12 +41,11 @@ namespace EB_Utility
         public static async Task<(int, string)> GetAsync(HttpClient httpClient, string url)
         {
             HttpResponseMessage response = await httpClient.GetAsync(url);
+            
             int responseCode = (int)response.StatusCode;
+            string responseContent = await response.Content.ReadAsStringAsync();
 
-            if(response.IsSuccessStatusCode)
-                return (responseCode, await response.Content.ReadAsStringAsync());
-
-            return (responseCode, null);
+            return (responseCode, responseContent);
         }
         
         // TaskCanceledException     - Request timeouted
@@ -56,12 +55,11 @@ namespace EB_Utility
         {
             var content = new FormUrlEncodedContent(paramList);
             HttpResponseMessage response = await httpClient.PostAsync(url, content);
+            
             int responseCode = (int)response.StatusCode;
+            string responseContent = await response.Content.ReadAsStringAsync();
 
-            if(response.IsSuccessStatusCode)
-                return (responseCode, await response.Content.ReadAsStringAsync());
-
-            return (responseCode, null);
+            return (responseCode, responseContent);
         }
 
         public static bool DownloadImage(string imageUrl, string filename, ImageFormat format)
