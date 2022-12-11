@@ -10,7 +10,26 @@ namespace EB_Utility
 {
     public static class WebRequest
     {
-        public static HttpClient CreateHTTPClient(double connectionTimeout=10.0, string userAgent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36")
+        // ipPort: 0.0.0.0:999
+        // authPair: (<username>, <password>)
+        public static WebProxy CreateProxy(string ipPort, (string, string)? authPair = null, bool useDefaultCredentials = false)
+        {
+            WebProxy webProxy = new WebProxy(ipPort, false);
+
+            if(authPair != null
+            && !string.IsNullOrEmpty(authPair?.Item1)
+            && !string.IsNullOrEmpty(authPair?.Item2))
+            {
+                webProxy.UseDefaultCredentials = false;
+                webProxy.Credentials = new NetworkCredential(userName: authPair?.Item1, password: authPair?.Item2);
+            }
+            else if(useDefaultCredentials)
+                webProxy.UseDefaultCredentials = true;
+
+            return webProxy;
+        }
+
+        public static HttpClient CreateHTTPClient(double connectionTimeout = 10.0, WebProxy webProxy = null, string userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36")
         {
             CookieContainer cookieContainer     = new CookieContainer();
             HttpClientHandler httpClientHandler = new HttpClientHandler
@@ -19,7 +38,8 @@ namespace EB_Utility
                                        | DecompressionMethods.Deflate,
                 AllowAutoRedirect = true,
                 UseCookies = true,
-                CookieContainer = cookieContainer
+                CookieContainer = cookieContainer,
+                Proxy = webProxy
             };
 
             HttpClient httpClient = new HttpClient(httpClientHandler)
