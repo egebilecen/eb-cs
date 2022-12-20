@@ -1,24 +1,22 @@
-﻿// NuGet Packet Requirements:
+// NuGet Packet Requirements:
 // [+] System.Data.SQLite by SQLite Development Team
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Data.SQLite;
 using System.Data;
 
 public class SQLite
 {
-    private SQLiteConnection conn;
+    private readonly SQLiteConnection conn;
 
     public SQLite(string dbFilePath, string password=null, uint version=3, bool readOnly=false, bool utf16=false, bool createDBIfMissing=false)
     {
         string connectionStr = $"Data Source={dbFilePath};Version={version};";
+        if(password != null)   connectionStr += $"Password={password};";
         if(!createDBIfMissing) connectionStr += "FailIfMissing=True;";
-        if(readOnly) connectionStr += "Read Only=True;";
-        if(utf16) connectionStr += "UseUTF16Encoding=True;";
+        if(readOnly)           connectionStr += "Read Only=True;";
+        if(utf16)              connectionStr += "UseUTF16Encoding=True;";
 
         conn = new SQLiteConnection(connectionStr);
         conn.Open();
