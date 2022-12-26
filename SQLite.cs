@@ -57,10 +57,20 @@ public class SQLite
         return table;
     }
 
-    // Returns number of rows affected by an SELECT, INSERT, UPDATE or DELETE.
     public int QueryRowCount(string query, List<object> paramList=null, Action<SQLiteException> errorHandler = null)
     {
-        int affectedRows = 0;
+        return QueryRowCount(query, paramList, out _, errorHandler);
+    }
+
+    public int QueryRowCountLastInsertId(string query, List<object> paramList, out long lastInsertId, Action<SQLiteException> errorHandler = null)
+    {
+        return QueryRowCount(query, paramList, out lastInsertId, errorHandler);
+    }
+
+    // Returns number of rows affected by an SELECT, INSERT, UPDATE or DELETE and last inserted row id (if it's the case) with "out" parameter.
+    private int QueryRowCount(string query, List<object> paramList, out long lastInsertId, Action<SQLiteException> errorHandler = null)
+    {
+        int affectedRows = -1;
 
         try
         {
@@ -77,10 +87,12 @@ public class SQLite
             }
 
             affectedRows = cmd.ExecuteNonQuery();
+            lastInsertId = conn.LastInsertRowId;
         }
         catch(SQLiteException err)
         {
             errorHandler?.Invoke(err);
+            lastInsertId = -1;
             return 0;
         }
         finally { conn.Close(); }
