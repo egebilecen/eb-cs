@@ -83,6 +83,8 @@ namespace EB_Utility
                 if(item.IntervalMS != 0
                 && now >= item.NextExecuteTime)
                 {
+                    item.UpdateInterval();
+
                     try { item.Function(item.Args); }
                     catch(Exception ex) 
                     { 
@@ -96,8 +98,6 @@ namespace EB_Utility
                         }
                         else Logger.LogException(ex, exceptionMessage);    
                     }
-
-                    item.UpdateInterval();
                 }
             }
         }
@@ -188,6 +188,8 @@ namespace EB_Utility
                 if(item.IntervalMS != 0
                 && now >= item.NextExecuteTime)
                 {
+                    item.UpdateInterval();
+
                     try { await item.Function(item.Args); }
                     catch(Exception ex)
                     { 
@@ -201,8 +203,6 @@ namespace EB_Utility
                         }
                         else Logger.LogException(ex, exceptionMessage);            
                     }
-
-                    item.UpdateInterval();
                 }
             }
         }
