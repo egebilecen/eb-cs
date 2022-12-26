@@ -50,8 +50,11 @@ namespace EB_Utility
             clock.Stop();
         }
 
-        public static void AddItem(ScheduleItem item)
+        public static void AddItem(ScheduleItem item, bool runImmediately=false)
         {
+            if(runImmediately)
+                item.NextExecuteTime = DateTime.Now.Subtract(TimeSpan.FromMilliseconds(item.IntervalMS));
+
             scheduleItems.Add(item);
         }
 
@@ -146,12 +149,17 @@ namespace EB_Utility
 
         public static void Stop()
         {
+            if(clock == null) return;
+
             clock.Elapsed -= ClockElapsed;
             clock.Stop();
         }
 
-        public static void AddItem(ScheduleItemAsync item)
+        public static void AddItem(ScheduleItemAsync item, bool runImmediately=false)
         {
+            if(runImmediately)
+                item.NextExecuteTime = DateTime.Now.Subtract(TimeSpan.FromMilliseconds(item.IntervalMS));
+
             scheduleItems.Add(item);
         }
 
