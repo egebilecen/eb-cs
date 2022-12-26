@@ -32,12 +32,14 @@ namespace EB_Utility
     public static class Scheduler
     {
         private static Timer clock;
-        private static List<ScheduleItem> scheduleItems = new List<ScheduleItem>();
+        private static readonly List<ScheduleItem> scheduleItems = new List<ScheduleItem>();
 
         public static void Start(ulong intervalMS)
         {
-            clock = new Timer();
-            clock.Interval = intervalMS;
+            clock = new Timer
+            {
+                Interval = intervalMS
+            };
             clock.Elapsed += new ElapsedEventHandler(ClockElapsed);
             clock.Start();
         }
@@ -53,9 +55,20 @@ namespace EB_Utility
             scheduleItems.Add(item);
         }
 
+        public static void RemoveItem(string name)
+        { 
+            int index = scheduleItems.FindIndex(item => item.Name == name);
+            if(index != -1) scheduleItems.RemoveAt(index);
+        }
+
         public static ScheduleItem GetItem(string name)
         {
             return scheduleItems.Find(item => item.Name == name);
+        }
+
+        public static IReadOnlyCollection<ScheduleItem> GetItems()
+        {
+            return scheduleItems.AsReadOnly();
         }
 
         private static void ClockElapsed(object sender, ElapsedEventArgs e)
@@ -64,7 +77,8 @@ namespace EB_Utility
 
             foreach(ScheduleItem item in scheduleItems)
             {
-                if(now >= item.NextExecuteTime)
+                if(item.IntervalMS != 0
+                && now >= item.NextExecuteTime)
                 {
                     try { item.Function(item.Args); }
                     catch(Exception ex) 
@@ -79,6 +93,7 @@ namespace EB_Utility
                         }
                         else Logger.LogException(ex, exceptionMessage);    
                     }
+
                     item.UpdateInterval();
                 }
             }
@@ -86,8 +101,7 @@ namespace EB_Utility
 
         public static void Dispose()
         {
-            if(clock != null)
-                clock.Dispose();
+            clock?.Dispose();
         }
     }
 
@@ -118,12 +132,14 @@ namespace EB_Utility
     public static class SchedulerAsync
     {
         private static Timer clock;
-        private static List<ScheduleItemAsync> scheduleItems = new List<ScheduleItemAsync>();
+        private static readonly List<ScheduleItemAsync> scheduleItems = new List<ScheduleItemAsync>();
 
         public static void Start(ulong intervalMS)
         {
-            clock = new Timer();
-            clock.Interval = intervalMS;
+            clock = new Timer
+            {
+                Interval = intervalMS
+            };
             clock.Elapsed += new ElapsedEventHandler(ClockElapsed);
             clock.Start();
         }
@@ -139,9 +155,20 @@ namespace EB_Utility
             scheduleItems.Add(item);
         }
 
+        public static void RemoveItem(string name)
+        { 
+            int index = scheduleItems.FindIndex(item => item.Name == name);
+            if(index != -1) scheduleItems.RemoveAt(index);
+        }
+
         public static ScheduleItemAsync GetItem(string name)
         {
             return scheduleItems.Find(item => item.Name == name);
+        }
+
+        public static IReadOnlyCollection<ScheduleItemAsync> GetItems()
+        {
+            return scheduleItems.AsReadOnly();
         }
 
         private static async void ClockElapsed(object sender, ElapsedEventArgs e)
@@ -150,7 +177,8 @@ namespace EB_Utility
 
             foreach(ScheduleItemAsync item in scheduleItems)
             {
-                if(now >= item.NextExecuteTime)
+                if(item.IntervalMS != 0
+                && now >= item.NextExecuteTime)
                 {
                     try { await item.Function(item.Args); }
                     catch(Exception ex)
@@ -165,6 +193,7 @@ namespace EB_Utility
                         }
                         else Logger.LogException(ex, exceptionMessage);            
                     }
+
                     item.UpdateInterval();
                 }
             }
@@ -172,8 +201,7 @@ namespace EB_Utility
 
         public static void Dispose()
         {
-            if(clock != null)
-                clock.Dispose();
+            clock?.Dispose();
         }
     }
 }
