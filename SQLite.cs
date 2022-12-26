@@ -61,6 +61,11 @@ public class SQLite
         return table;
     }
 
+    public DataRowCollection QueryRows(string query, List<object> paramList=null, Action<SQLiteException> errorHandler = null)
+    {
+        return Query(query, paramList, errorHandler).Rows;
+    }
+
     public int QueryRowCount(string query, List<object> paramList=null, Action<SQLiteException> errorHandler = null)
     {
         return QueryRowCount(query, paramList, out _, errorHandler);
@@ -71,19 +76,21 @@ public class SQLite
         return QueryRowCount(query, paramList, out lastInsertId, errorHandler);
     }
 
-    // Returns number of rows affected by an SELECT, INSERT, UPDATE or DELETE and last inserted row id (if it's the case) with "out" parameter.
+    // Returns number of rows affected by an INSERT, UPDATE or DELETE and last inserted row id (if it's the case) with "out" parameter.
     private int QueryRowCount(string query, List<object> paramList, out long lastInsertId, Action<SQLiteException> errorHandler = null)
     {
-        int affectedRows = -1;
+        int affectedRows = 0;
 
         try
         {
             conn.Open();
 
-            SQLiteCommand cmd = new SQLiteCommand(query, conn);
-            cmd.CommandTimeout = commandTimeout;
+            SQLiteCommand cmd = new SQLiteCommand(query, conn)
+            {
+                CommandTimeout = commandTimeout
+            };
 
-            if(paramList != null)
+            if (paramList != null)
             {
                 int i=0;
                 paramList.ForEach(e =>
