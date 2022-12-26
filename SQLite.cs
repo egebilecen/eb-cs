@@ -9,14 +9,18 @@ using System.Data;
 public class SQLite
 {
     private readonly SQLiteConnection conn;
+    private readonly int commandTimeout;
 
-    public SQLite(string dbFilePath, string password=null, uint version=3, bool readOnly=false, bool utf16=false, bool createDBIfMissing=false)
+    public SQLite(string dbFilePath, int connectionTimeout=0, int commandTimeout=5, string password=null, uint version=3, bool readOnly=false, bool utf16=false, bool createDBIfMissing=false)
     {
         string connectionStr = $"Data Source={dbFilePath};Version={version};";
-        if(password != null)   connectionStr += $"Password={password};";
-        if(!createDBIfMissing) connectionStr += "FailIfMissing=True;";
-        if(readOnly)           connectionStr += "Read Only=True;";
-        if(utf16)              connectionStr += "UseUTF16Encoding=True;";
+        if(connectionTimeout > 0) connectionStr += $"Connection Timeout={connectionTimeout};";
+        if(password != null)      connectionStr += $"Password={password};";
+        if(readOnly)              connectionStr += "Read Only=True;";
+        if(utf16)                 connectionStr += "UseUTF16Encoding=True;";
+        if(!createDBIfMissing)    connectionStr += "FailIfMissing=True;";
+
+        this.commandTimeout = commandTimeout;
 
         conn = new SQLiteConnection(connectionStr);
         conn.Open();
@@ -77,6 +81,8 @@ public class SQLite
             conn.Open();
 
             SQLiteCommand cmd = new SQLiteCommand(query, conn);
+            cmd.CommandTimeout = commandTimeout;
+
             if(paramList != null)
             {
                 int i=0;
