@@ -66,7 +66,7 @@ namespace EB_Utility
             return default;
         }
 
-        public static void SetSetting(string key, object value, bool addIfNotExist=false)
+        public static void SetSetting(string key, object value, bool addIfNotExist=true)
         {
             if(value == null) value = "";
             else value = value.ToString();
