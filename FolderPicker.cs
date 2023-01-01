@@ -1,4 +1,5 @@
 // Project > References > Add Reference > PresentationCore
+// Project > References > Add Reference > PresentationFramework
 // Project > References > Add Reference > WindowsBase
 // https://stackoverflow.com/a/66187224
 using System.Windows; // for WPF support
