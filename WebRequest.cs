@@ -85,6 +85,21 @@ namespace EB_Utility
 
             return (responseCode, responseContent);
         }
+        
+        // TaskCanceledException     - Request timeouted
+        // InvalidOperationException - Invalid URL
+        // return: (<status code>, <nullable response string>)
+        public static async Task<(int, string)> PostAsync(HttpClient httpClient, string url, string json)
+        {
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+            HttpResponseMessage response = await httpClient.PostAsync(url, content);
+            
+            int responseCode = (int)response.StatusCode;
+            byte[] buffer = await response.Content.ReadAsByteArrayAsync();
+            string responseContent = Encoding.UTF8.GetString(buffer, 0, buffer.Length);
+
+            return (responseCode, responseContent);
+        }
 
         public static bool DownloadImage(string imageUrl, string filename, ImageFormat format)
         {    
