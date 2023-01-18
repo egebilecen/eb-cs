@@ -1,4 +1,5 @@
 using System;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace EB_Utility
@@ -163,6 +164,20 @@ namespace EB_Utility
 
                 labelTimer.Start();
             }
+        }
+
+        public static void DrawMenuStripBorder(Form form, MenuStrip menuStrip, PictureBox pbBorder)
+        {
+            pbBorder.Width  = form.Size.Width;
+            pbBorder.Height = 1;
+            pbBorder.Location = new Point(0, menuStrip.Height - 1);
+
+            Bitmap bmp = new Bitmap(pbBorder.Width, pbBorder.Height);
+            using(var g = Graphics.FromImage(bmp))
+            {
+                g.DrawLine(new Pen(Color.Gray, 5), 0, pbBorder.Height, pbBorder.Width, pbBorder.Height);
+            }
+            pbBorder.Image = bmp;
         }
 
         public static void InvokeControl(Control control, Action<Control> action)
