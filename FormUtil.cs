@@ -166,18 +166,28 @@ namespace EB_Utility
             }
         }
 
-        public static void DrawMenuStripBorder(Form form, MenuStrip menuStrip, PictureBox pbBorder)
+        private static void _DrawMenuStripBorder(PictureBox pbBorder)
         {
-            pbBorder.Width  = form.Size.Width;
-            pbBorder.Height = 1;
-            pbBorder.Location = new Point(0, menuStrip.Height - 1);
-
             Bitmap bmp = new Bitmap(pbBorder.Width, pbBorder.Height);
             using(var g = Graphics.FromImage(bmp))
             {
                 g.DrawLine(new Pen(Color.Gray, 5), 0, pbBorder.Height, pbBorder.Width, pbBorder.Height);
             }
             pbBorder.Image = bmp;
+        }
+
+        public static void DrawMenuStripBorder(Form form, MenuStrip menuStrip, PictureBox pbBorder)
+        {
+            pbBorder.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            pbBorder.Width  = form.Size.Width;
+            pbBorder.Height = 1;
+            pbBorder.Location = new Point(0, menuStrip.Height - 1);
+
+            _DrawMenuStripBorder(pbBorder);
+
+            pbBorder.SizeChanged += (s, e) => { 
+                _DrawMenuStripBorder(pbBorder);
+            };
         }
 
         public static void InvokeControl(Control control, Action<Control> action)
