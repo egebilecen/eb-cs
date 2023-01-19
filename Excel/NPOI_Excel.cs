@@ -6,6 +6,8 @@ using NPOI.HSSF.UserModel; // XLS
 using NPOI.SS.UserModel;
 using System.IO;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace EB_Utility
 {
@@ -68,6 +70,34 @@ namespace EB_Utility
                 string value = values[i];
                 currRow.CreateCell(i + offsetLeft).SetCellValue(value);
             }
+        }
+
+        public static List<Dictionary<string, string>> GetDataWithHeaders(ISheet ws, int headerRowIndex=0, bool headerTextToLower=false)
+        {
+            List<Dictionary<string, string>> dataList = new List<Dictionary<string, string>>();
+
+            IRow headerRow = ws.GetRow(headerRowIndex);
+            if(headerRow == null) return dataList;
+
+            for(int i=1; i <= ws.LastRowNum; i++)
+            {
+                Dictionary<string, string> dataWithHeader = new Dictionary<string, string>();
+                IRow row = ws.GetRow(i);
+
+                int j=0;
+                foreach(ICell headerCell in headerRow.Cells)
+                {
+                    string headerText = headerCell.StringCellValue;
+                    if(headerTextToLower) headerText = headerText.ToLower();
+
+                    dataWithHeader[headerText] = row.Cells.ElementAtOrDefault(j)?.StringCellValue;
+                    j++;
+                }
+
+                dataList.Add(dataWithHeader);
+            }
+
+            return dataList;
         }
     }
 }
