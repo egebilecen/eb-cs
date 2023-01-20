@@ -14,15 +14,15 @@ public static class StringExtensions
         return str;
     }
 
-    public static string FirstCharacterToUpper(this string str)
+    public static string FirstCharacterToUpper(this string str, bool replaceTurkishI = true)
     {
         if(string.IsNullOrEmpty(str)) return str;
-        return str.First().ToString().ToUpper() + str.Substring(1);
+        return str.First().ToString().ToUpper().Replace(replaceTurkishI ? "İ" : "", replaceTurkishI ? "I" : "") + str.Substring(1);
     }
 
-    public static string WordFirstCharacterToUpper(this string str)
+    public static string WordFirstCharacterToUpper(this string str, bool replaceTurkishI = true)
     {
         if(string.IsNullOrEmpty(str)) return str;
-        return string.Join(" ", str.Split(' ').Select(x => x.FirstCharacterToUpper()));
+        return string.Join(" ", str.Split(' ').Select(x => x.FirstCharacterToUpper(replaceTurkishI)));
     }
 }
