@@ -107,11 +107,11 @@ public class SeleniumChrome
        return e.FindElement(By.XPath(".."));
     }
 
-    public bool GetIsStringExistInElement(string selector, string str)
+    public bool GetIsStringExistInElement(string selector, string str, bool byCssSelector = true)
     {
         try
         {
-            IWebElement elem = driver.FindElement(By.CssSelector(selector));
+            IWebElement elem = driver.FindElement(byCssSelector ? By.CssSelector(selector) : By.XPath(selector));
 
             if(elem.Text.Contains(str)) return true;
         }
@@ -144,99 +144,67 @@ public class SeleniumChrome
         wait.Until(driver => driver.Url.Contains(str));
     }
 
-    public void WaitUntilElementIsExist(string selector, int timeout = 999999999)
+    public void WaitUntilElementIsExist(string selector, bool byCssSelector = true, int timeout = 999999999)
     {
         CheckDriver();
         var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(timeout));
         wait.IgnoreExceptionTypes(typeof(WebDriverException));
-        wait.Until(
-            ExpectedConditions.ElementExists(By.CssSelector(selector))
-        );
+        wait.Until(ExpectedConditions.ElementExists(byCssSelector ? By.CssSelector(selector) : By.XPath(selector)));
     }
 
-    public void WaitUntilElementIsExistNot(string selector, int loop_delay_ms = 1000, int timeout = 999999999)
+    public void WaitUntilElementIsExistNot(string selector, bool byCssSelector = true, int timeout = 999999999)
     {
         CheckDriver();
         var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(timeout));
         wait.IgnoreExceptionTypes(typeof(WebDriverException));
-        wait.Until(driver => driver.FindElement(By.CssSelector(selector)) == null);
+        wait.Until(driver => driver.FindElement(byCssSelector ? By.CssSelector(selector) : By.XPath(selector)) == null);
     }
 
-    public void WaitUntilElementIsClickable(string selector, int timeout = 999999999)
+    public void WaitUntilElementIsClickable(string selector, bool byCssSelector = true, int timeout = 999999999)
     {
         CheckDriver();
         var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(timeout));
         wait.IgnoreExceptionTypes(typeof(WebDriverException));
-        wait.Until(
-            ExpectedConditions.ElementToBeClickable(By.CssSelector(selector))
-        );
+        wait.Until(ExpectedConditions.ElementToBeClickable(byCssSelector ? By.CssSelector(selector) : By.XPath(selector)));
     }
 
-    public void WaitUntilElementValue(string selector, string value, int timeout = 999999999)
+    public void WaitUntilElementValue(string selector, string value, bool byCssSelector = true, int timeout = 999999999)
     {
         CheckDriver();
         var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(timeout));
         wait.IgnoreExceptionTypes(typeof(WebDriverException));
-        wait.Until(driver => driver.FindElement(By.CssSelector(selector)).Text == value);
+        wait.Until(driver => driver.FindElement(byCssSelector ? By.CssSelector(selector) : By.XPath(selector)).Text == value);
     }
 
-    public void WaitUntilElementValueNot(string selector, string value, int timeout = 999999999)
+    public void WaitUntilElementValueNot(string selector, string value, bool byCssSelector = true, int timeout = 999999999)
     {
         CheckDriver();
         var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(timeout));
         wait.IgnoreExceptionTypes(typeof(WebDriverException));
-        wait.Until(driver => driver.FindElement(By.CssSelector(selector)).Text != value);
+        wait.Until(driver => driver.FindElement(byCssSelector ? By.CssSelector(selector) : By.XPath(selector)).Text != value);
     }
 
-    public void WaitUntilTotalElementListCount(string selector, int count, int loop_delay_ms = 1000, int timeout = 999999999)
+    public void WaitUntilTotalElementListCount(string selector, int count, bool byCssSelector = true, int timeout = 999999999)
     {
         CheckDriver();
-
-        int start_time = GetCurrentTimestamp();
-
-        while(GetCurrentTimestamp() - start_time < timeout)
-        {
-            var elem_list = driver.FindElements(By.CssSelector(selector));
-
-            if(elem_list.Count == count) return;
-
-            Thread.Sleep(loop_delay_ms);
-        }
-
-        throw new WebDriverTimeoutException("Timed out while waiting total element count for \""+selector+"\" to be "+count.ToString()+".");
+        var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(timeout));
+        wait.IgnoreExceptionTypes(typeof(WebDriverException));
+        wait.Until(driver => driver.FindElements(byCssSelector ? By.CssSelector(selector) : By.XPath(selector)).Count == count);
     }
 
-    public void WaitUntilTotalElementListCountNot(string selector, int count, int loop_delay_ms = 1000, int timeout = 999999999)
+    public void WaitUntilTotalElementListCountNot(string selector, int count, bool byCssSelector = true, int timeout = 999999999)
     {
         CheckDriver();
-
-        int start_time = GetCurrentTimestamp();
-
-        while(GetCurrentTimestamp() - start_time < timeout)
-        {
-            var elem_list = driver.FindElements(By.CssSelector(selector));
-
-            if(elem_list.Count != count) return;
-
-            Thread.Sleep(loop_delay_ms);
-        }
-
-        throw new WebDriverTimeoutException("Timed out while waiting total element count for \""+selector+"\" to be not "+count.ToString()+".");
+        var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(timeout));
+        wait.IgnoreExceptionTypes(typeof(WebDriverException));
+        wait.Until(driver => driver.FindElements(byCssSelector ? By.CssSelector(selector) : By.XPath(selector)).Count != count);
     }
 
-    public void WaitUntilStringExistInElement(string selector, string str, int loop_delay_ms = 1000, int timeout = 999999999)
+    public void WaitUntilStringExistInElement(string selector, string str, bool byCssSelector = true, int timeout = 999999999)
     {
         CheckDriver();
-
-        int start_time = GetCurrentTimestamp();
-
-        while(GetCurrentTimestamp() - start_time < timeout)
-        {
-            if(GetIsStringExistInElement(selector, str) == true) return;
-
-            Thread.Sleep(loop_delay_ms);
-        }
-
-        throw new WebDriverTimeoutException("Timed out while waiting for supplied string to be exist in \""+selector+"\".");
+        var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(timeout));
+        wait.IgnoreExceptionTypes(typeof(WebDriverException));
+        wait.Until(driver => driver.FindElement(byCssSelector ? By.CssSelector(selector) : By.XPath(selector)).Text.Contains(str));
     }
 }
