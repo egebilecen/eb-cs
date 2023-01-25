@@ -47,15 +47,33 @@ public class SeleniumChrome
         //driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(15);
     }
 
-    // Helper Functions
-    public void GoTo(string url, bool waitURL=false, int timeout=999999999)
+    public void Close()
     {
-        CheckDriver();
+        try
+        {
+            CheckDriver();
 
-        driver.Navigate().GoToUrl(url);
-        if(waitURL) WaitUntilURL(url, timeout);
+            driver.Quit();
+            driver = null;
+        }
+        catch(WebDriverException)
+        {
+            //pass
+        }
     }
-    
+
+    public void CheckDriver()
+    {
+        if(driver == null) throw new WebDriverException("Error: Driver is not initialized.");
+    }
+
+    public bool IsBrowserOpen()
+    {
+        if(driver != null) return true;
+        else return false;
+    }
+
+    // Helper Functions
     public void SetBrowserZoomPercentage(double zoomPercentage)
     {
         const string jsCode = "var selectBox = document.querySelector(\"settings-ui\").shadowRoot.querySelector(\"#main\").shadowRoot.querySelector(\"settings-basic-page\").shadowRoot.querySelector(\"settings-appearance-page\").shadowRoot.querySelector(\"#zoomLevel\");var changeEvent = new Event(\"change\");selectBox.value = arguments[0];selectBox.dispatchEvent(changeEvent);";
@@ -79,38 +97,12 @@ public class SeleniumChrome
         }
     }
 
-    public void Close()
-    {
-        try
-        {
-            CheckDriver();
-
-            driver.Quit();
-            driver = null;
-        }
-        catch(WebDriverException)
-        {
-            //pass
-        }
-    }
-
-    public void CheckDriver()
-    {
-        if(driver == null) throw new WebDriverException("Error: Driver is not initialized.");
-    }
-
-    public bool IsBrowserOpen()
-    {
-        if (driver != null) return true;
-        else return false;
-    }
-
     public int GetCurrentTimestamp()
     {
         return (int) DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
     }
 
-    public IWebElement GetParent(IWebElement e)
+    public IWebElement GetElementParent(IWebElement e)
     {
        return e.FindElement(By.XPath(".."));
     }
@@ -126,6 +118,14 @@ public class SeleniumChrome
         catch (Exception) { }
 
         return false;
+    }
+
+    public void GoTo(string url, bool waitURL=false, int timeout=999999999)
+    {
+        CheckDriver();
+
+        driver.Navigate().GoToUrl(url);
+        if(waitURL) WaitUntilURL(url, timeout);
     }
 
     public void WaitUntilURL(string url, int timeout=999999999)
