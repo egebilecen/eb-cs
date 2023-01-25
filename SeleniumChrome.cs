@@ -157,21 +157,9 @@ public class SeleniumChrome
     public void WaitUntilElementIsExistNot(string selector, int loop_delay_ms = 1000, int timeout = 999999999)
     {
         CheckDriver();
-
-        int start_time = GetCurrentTimestamp();
-
-        while(GetCurrentTimestamp() - start_time < timeout)
-        {
-            try { IWebElement elem = driver.FindElement(By.CssSelector(selector)); }
-            catch(NoSuchElementException)
-            {
-                return;
-            }
-
-            Thread.Sleep(loop_delay_ms);
-        }
-
-        throw new WebDriverTimeoutException("Timed out while waiting \""+selector+"\" to be not exist.");
+        var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(timeout));
+        wait.IgnoreExceptionTypes(typeof(WebDriverException));
+        wait.Until(driver => driver.FindElement(By.CssSelector(selector)) == null);
     }
 
     public void WaitUntilElementIsClickable(string selector, int timeout = 999999999)
