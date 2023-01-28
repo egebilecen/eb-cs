@@ -21,13 +21,13 @@ public class SeleniumChrome
             process.Kill();
     }
 
-    public void Init(bool headless = false, double scaleFactor = 1.0, string userAgentOverride = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36")
+    public void Init(bool headless = false, double scaleFactor = 1.0, string userAgentOverride = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36", List<string> extraArgs = null)
     {
         KillDriver();
 
         // Create Options
         var chromeOptions = new ChromeOptions();
-        chromeOptions.AddUserProfilePreference("disable-popup-blocking", "true");
+
         chromeOptions.AddArgument("--log-level=3");
         chromeOptions.AddArgument("--disable-notifications");
         chromeOptions.AddArgument("--ignore-ssl-errors=yes");
@@ -35,20 +35,23 @@ public class SeleniumChrome
         chromeOptions.AddArgument("--disable-blink-features");
         chromeOptions.AddArgument("--disable-blink-features=AutomationControlled");
         chromeOptions.AddArgument($"--force-device-scale-factor={scaleFactor}");
-
-        chromeOptions.AddExcludedArguments(new List<string>() { "enable-automation" });
         
         if(headless) 
             chromeOptions.AddArgument("--headless");
 
         if(!string.IsNullOrEmpty(userAgentOverride))
             chromeOptions.AddArgument($"--user-agent={userAgentOverride}");
+        
+        if(extraArgs != null)
+            foreach(string extraArg in extraArgs)
+                chromeOptions.AddArgument(extraArg);
+
+        chromeOptions.PageLoadStrategy = PageLoadStrategy.None;
+        chromeOptions.AddUserProfilePreference("disable-popup-blocking", "true");
+        chromeOptions.AddExcludedArguments(new List<string>() { "enable-automation" });
 
         var service = ChromeDriverService.CreateDefaultService();
         service.HideCommandPromptWindow = true;
-
-        // Add desired capabilities
-        chromeOptions.PageLoadStrategy = PageLoadStrategy.None;
 
         driver = new ChromeDriver(service, chromeOptions);
         driver.Manage().Window.Maximize();
