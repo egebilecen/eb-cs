@@ -21,7 +21,7 @@ public class SeleniumChrome
             process.Kill();
     }
 
-    public void Init(bool headless=false, string userAgentOverride="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36")
+    public void Init(bool headless = false, double scaleFactor = 1.0, string userAgentOverride = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36")
     {
         KillDriver();
 
@@ -30,12 +30,19 @@ public class SeleniumChrome
         chromeOptions.AddUserProfilePreference("disable-popup-blocking", "true");
         chromeOptions.AddArgument("--log-level=3");
         chromeOptions.AddArgument("--disable-notifications");
+        chromeOptions.AddArgument("--ignore-ssl-errors=yes");
+        chromeOptions.AddArgument("--ignore-certificate-errors");
+        chromeOptions.AddArgument("--disable-blink-features");
+        chromeOptions.AddArgument("--disable-blink-features=AutomationControlled");
+        chromeOptions.AddArgument($"--force-device-scale-factor={scaleFactor}");
+
+        chromeOptions.AddExcludedArguments(new List<string>() { "enable-automation" });
+        
+        if(headless) 
+            chromeOptions.AddArgument("--headless");
 
         if(!string.IsNullOrEmpty(userAgentOverride))
             chromeOptions.AddArgument($"--user-agent={userAgentOverride}");
-        //chromeOptions.AddArgument("--force-device-scale-factor=1.2");
-
-        if(headless) chromeOptions.AddArgument("--headless");
 
         var service = ChromeDriverService.CreateDefaultService();
         service.HideCommandPromptWindow = true;
