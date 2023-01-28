@@ -21,6 +21,11 @@ public class SeleniumChrome
             process.Kill();
     }
 
+    private void CheckDriver()
+    {
+        if(driver == null) throw new WebDriverException("Error: Driver is not initialized.");
+    }
+
     public void Init(bool headless = false, double scaleFactor = 1.0, string userAgentOverride = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36", List<string> extraArgs = null)
     {
         KillDriver();
@@ -69,13 +74,7 @@ public class SeleniumChrome
         }
         catch(WebDriverException)
         {
-            //pass
         }
-    }
-
-    public void CheckDriver()
-    {
-        if(driver == null) throw new WebDriverException("Error: Driver is not initialized.");
     }
 
     public bool IsBrowserOpen()
@@ -106,24 +105,6 @@ public class SeleniumChrome
         {
             return false;
         }
-    }
-
-    public int GetCurrentTimestamp()
-    {
-        return (int) DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
-    }
-
-    public bool GetIsStringExistInElement(string selector, string str, bool byCssSelector = true)
-    {
-        try
-        {
-            IWebElement elem = driver.FindElement(byCssSelector ? By.CssSelector(selector) : By.XPath(selector));
-
-            if(elem.Text.Contains(str)) return true;
-        }
-        catch (Exception) { }
-
-        return false;
     }
 
     public void GoTo(string url, bool waitURL = false, int timeout = 999999999)
