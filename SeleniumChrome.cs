@@ -33,7 +33,7 @@ public class SeleniumChrome
         // Create Options
         var chromeOptions = new ChromeOptions();
 
-        chromeOptions.AddArgument("--log-level=3");
+        //chromeOptions.AddArgument("--log-level=3");
         chromeOptions.AddArgument("--disable-notifications");
         chromeOptions.AddArgument("--ignore-ssl-errors=yes");
         chromeOptions.AddArgument("--ignore-certificate-errors");
