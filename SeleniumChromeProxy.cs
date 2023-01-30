@@ -114,21 +114,25 @@ public class SeleniumChromeProxy
     private readonly SeleniumProxyServer proxyServer = new SeleniumProxyServer();
     public SeleniumChrome selenium = new SeleniumChrome();
 
-    public void Init(string ipPort, (string, string) usernamePassword, bool headless = false, double scaleFactor = 1.0, string userAgentOverride = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36")
+    public void Init(string ip, string port, (string, string)? authPair = null, bool headless = false, double scaleFactor = 1.0, string userAgentOverride = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36")
     {
-        string[] ipPortSplit = ipPort.Split(':');
-        int localPort = proxyServer.AddEndpoint(
-            new ProxyAuth(ipPortSplit[0], 
-                          Convert.ToInt32(ipPortSplit.ElementAtOrDefault(1)), 
-                          usernamePassword.Item1, 
-                          usernamePassword.Item2
-            )
-        );
+        List<string> extraArgs = new List<string>();
 
-        List<string> extraArgs = new List<string>
+        if(authPair != null
+        && !string.IsNullOrEmpty(authPair?.Item1)
+        && !string.IsNullOrEmpty(authPair?.Item2))
         {
-            $"--proxy-server=127.0.0.1:{localPort}"
-        };
+            int localPort = proxyServer.AddEndpoint(
+                new ProxyAuth(ip, 
+                              Convert.ToInt32(port), 
+                              authPair?.Item1, 
+                              authPair?.Item2
+                )
+            );
+
+            extraArgs.Add($"--proxy-server=127.0.0.1:{localPort}");
+        }
+        else extraArgs.Add($"--proxy-server={ip}:{port}");
 
         selenium.Init(headless: headless, scaleFactor: scaleFactor, userAgentOverride: userAgentOverride, extraArgs: extraArgs);
     }
