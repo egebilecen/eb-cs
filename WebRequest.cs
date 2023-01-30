@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
@@ -12,11 +13,26 @@ namespace EB_Utility
 {
     public static class WebRequest
     {
-        // ipPort: 0.0.0.0:999
-        // authPair: (<username>, <password>)
-        public static WebProxy CreateProxy(string ipPort, (string, string)? authPair = null, bool useDefaultCredentials = false)
+        // str: 0.0.0.0:9999:username:password
+        public static Dictionary<string, string> ParseProxyStr(string str)
         {
-            WebProxy webProxy = new WebProxy(ipPort, false);
+            string[] strSplit = str.Split(':');
+
+            return new Dictionary<string, string>
+            {
+                { "ip", strSplit.ElementAtOrDefault(0) },
+                { "port", strSplit.ElementAtOrDefault(1) },
+                { "username", strSplit.ElementAtOrDefault(2) },
+                { "password", strSplit.ElementAtOrDefault(3) },
+            };
+        }
+        
+        // ip: 0.0.0.0
+        // port: 9999
+        // authPair: (<username>, <password>)
+        public static WebProxy CreateProxy(string ip, string port, (string, string)? authPair = null, bool useDefaultCredentials = false)
+        {
+            WebProxy webProxy = new WebProxy($"{ip}:{port}", false);
 
             if(authPair != null
             && !string.IsNullOrEmpty(authPair?.Item1)
