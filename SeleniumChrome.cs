@@ -138,9 +138,14 @@ public class SeleniumChrome
         return null;
     }
 
-    public void ClickViaJavascript(string selector)
+    public void ClickJavascript(string selector)
     {
         ExecuteJavascriptNoException("document.querySelector(args[0]).click()", selector);
+    }
+
+    public void SendKeysJavascript(string selector, string text)
+    {
+        ExecuteJavascriptNoException("var elem = document.querySelector(args[0]); elem.value = args[1]; elem.dispatchEvent(new Event('change'));", selector, text);
     }
 
     public void Sleep(int seconds)
