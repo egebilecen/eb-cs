@@ -117,21 +117,14 @@ namespace EB_Utility
             return (responseCode, responseContent);
         }
 
-        public static bool DownloadImage(string imageUrl, string filename, ImageFormat format)
-        {    
-            WebClient client = new WebClient();
-            Stream    stream = client.OpenRead(imageUrl);
+        public static async Task<bool> DownloadFile(HttpClient httpClient, string url, string filePath)
+        {
+            HttpResponseMessage response = await httpClient.GetAsync(url);
 
-            Bitmap bitmap;  
-            bitmap = new Bitmap(stream);
+            using(FileStream fs = new FileStream(filePath, FileMode.OpenOrCreate))
+                await response.Content.CopyToAsync(fs);
 
-            bitmap?.Save(filename, format);
-
-            stream.Flush();
-            stream.Close();
-            client.Dispose();
-
-            return File.Exists(filename);
+            return File.Exists(filePath);
         }
     }
 }
