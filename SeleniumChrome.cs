@@ -140,12 +140,22 @@ public class SeleniumChrome
 
     public void ClickJavascript(string selector)
     {
-        ExecuteJavascriptNoException("document.querySelector(args[0]).click()", selector);
+        ExecuteJavascriptNoException("document.querySelector(args[0]).click();", selector);
     }
 
     public void SendKeysJavascript(string selector, string text)
     {
         ExecuteJavascriptNoException("var elem = document.querySelector(args[0]); elem.value = args[1]; elem.dispatchEvent(new Event('change'));", selector, text);
+    }
+
+    public void TriggerEvent(IWebElement elem, string eventName)
+    {
+        ExecuteJavascriptNoException("args[0].dispatchEvent(new Event(args[1]));", elem, eventName);
+    }
+
+    public void TriggerEvent(string selector, string eventName)
+    {
+        TriggerEvent(QuerySelector(selector), eventName);
     }
 
     public void Sleep(int seconds)
