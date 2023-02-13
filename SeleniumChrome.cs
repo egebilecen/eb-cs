@@ -86,7 +86,7 @@ public class SeleniumChrome
     // Helper Functions
     public void SetBrowserZoomPercentage(double zoomPercentage)
     {
-        const string jsCode = "var selectBox = document.querySelector(\"settings-ui\").shadowRoot.querySelector(\"#main\").shadowRoot.querySelector(\"settings-basic-page\").shadowRoot.querySelector(\"settings-appearance-page\").shadowRoot.querySelector(\"#zoomLevel\");var changeEvent = new Event(\"change\");selectBox.value = arguments[0];selectBox.dispatchEvent(changeEvent);";
+        const string jsCode = "let selectBox = document.querySelector(\"settings-ui\").shadowRoot.querySelector(\"#main\").shadowRoot.querySelector(\"settings-basic-page\").shadowRoot.querySelector(\"settings-appearance-page\").shadowRoot.querySelector(\"#zoomLevel\");let changeEvent = new Event(\"change\");selectBox.value = arguments[0];selectBox.dispatchEvent(changeEvent);";
         
         GoTo("chrome://settings/");
         WaitUntilElementIsExist("settings-ui");
@@ -127,7 +127,7 @@ public class SeleniumChrome
 
     public object ExecuteJavascript(string code, params object[] args)
     {
-        return driver.ExecuteScript($"var args = arguments;{code}", args);
+        return driver.ExecuteScript($"const args = arguments;{code}", args);
     }
 
     public object ExecuteJavascriptNoException(string code, params object[] args)
@@ -145,7 +145,7 @@ public class SeleniumChrome
 
     public void SendKeysJavascript(string selector, string text)
     {
-        ExecuteJavascriptNoException("var elem = document.querySelector(args[0]); elem.value = args[1]; elem.dispatchEvent(new Event('change'));", selector, text);
+        ExecuteJavascriptNoException("let elem = document.querySelector(args[0]); elem.value = args[1]; elem.dispatchEvent(new Event('change'));", selector, text);
     }
 
     public void TriggerEvent(IWebElement elem, string eventName)
@@ -156,6 +156,35 @@ public class SeleniumChrome
     public void TriggerEvent(string selector, string eventName)
     {
         TriggerEvent(QuerySelector(selector), eventName);
+    }
+
+    public bool IsOverflown(IWebElement elem)
+    {
+        return (bool)ExecuteJavascriptNoException("return args[0].scrollHeight > args[0].clientHeight || args[0].scrollWidth > args[0].clientWidth;", elem);
+    }
+
+    public bool IsOverflown(string selector)
+    {
+        return IsOverflown(QuerySelector(selector));
+    }
+
+    public bool IsVisible(IWebElement elem)
+    {
+        return (bool)ExecuteJavascriptNoException(@"
+            function checkVisible(elem)
+            {
+                let rect = elem.getBoundingClientRect();
+                let viewHeight = Math.max(document.documentElement.clientHeight, window.innerHeight);
+                return !(rect.bottom < 0 || rect.top - viewHeight >= 0);
+            }
+
+            return checkVisible(args[0]);
+        ", elem);
+    }
+
+    public bool IsVisible(string selector)
+    {
+        return IsVisible(QuerySelector(selector));
     }
 
     public void Sleep(int seconds)
