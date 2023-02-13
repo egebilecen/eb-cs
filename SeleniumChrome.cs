@@ -51,7 +51,7 @@ public class SeleniumChrome
         if(driver == null) throw new WebDriverException("Error: Driver is not initialized.");
     }
 
-    public void Init(bool headless = false, double scaleFactor = 1.0, string userAgentOverride = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36", List<string> extraArgs = null)
+    public void Init(bool headless = false, bool maximizeWindow = true, int pageLoadTimeout = 0, double scaleFactor = 1.0, (int, int)? windowSize = null, string userAgentOverride = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36", List<string> extraArgs = null)
     {
         KillDriver();
 
@@ -69,6 +69,9 @@ public class SeleniumChrome
         if(headless) 
             chromeOptions.AddArgument("--headless");
 
+        if(windowSize != null)
+            chromeOptions.AddArgument($"--window-size={windowSize?.Item1},{windowSize?.Item2}");
+        
         if(!string.IsNullOrEmpty(userAgentOverride))
             chromeOptions.AddArgument($"--user-agent={userAgentOverride}");
         
@@ -84,8 +87,12 @@ public class SeleniumChrome
         service.HideCommandPromptWindow = true;
 
         driver = new ChromeDriver(service, chromeOptions);
-        driver.Manage().Window.Maximize();
-        //driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(15);
+
+        if(maximizeWindow) 
+            driver.Manage().Window.Maximize();
+
+        if(pageLoadTimeout > 0)
+            driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(pageLoadTimeout);
     }
 
     public void Close()
