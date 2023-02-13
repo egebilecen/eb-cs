@@ -13,6 +13,31 @@ using SeleniumExtras.WaitHelpers;
 
 public class SeleniumChrome
 {
+    public static class JavascriptFunctions
+    {
+        public static string IsOverflown()
+        {
+            return @"
+                function IsOverflown(elem)
+                {
+                    return elem.scrollHeight > elem.clientHeight || elem.scrollWidth > elem.clientWidth;
+                }
+            ";
+        }
+
+        public static string IsVisible(bool checkIfFullyVisible = false)
+        {
+            return @"
+                function IsVisible(elem)
+                {
+                    let rect = elem.getBoundingClientRect();
+                    let viewHeight = Math.max(document.documentElement.clientHeight, window.innerHeight);
+                    return !(rect.bottom < 0 || rect.top " + (checkIfFullyVisible ? "+ rect.height" : "") + @" - viewHeight >= 0);
+                }
+            ";
+        }
+    }
+
     public ChromeDriver driver = null;
 
     private void KillDriver()
@@ -160,7 +185,10 @@ public class SeleniumChrome
 
     public bool IsOverflown(IWebElement elem)
     {
-        return (bool)ExecuteJavascriptNoException("return args[0].scrollHeight > args[0].clientHeight || args[0].scrollWidth > args[0].clientWidth;", elem);
+        return (bool)ExecuteJavascriptNoException($@"
+            {JavascriptFunctions.IsOverflown()}
+            return IsOverflown(args[0]);
+        ", elem);
     }
 
     public bool IsOverflown(string selector)
@@ -168,23 +196,17 @@ public class SeleniumChrome
         return IsOverflown(QuerySelector(selector));
     }
 
-    public bool IsVisible(IWebElement elem)
+    public bool IsVisible(IWebElement elem, bool checkIfFullyVisible = false)
     {
-        return (bool)ExecuteJavascriptNoException(@"
-            function checkVisible(elem)
-            {
-                let rect = elem.getBoundingClientRect();
-                let viewHeight = Math.max(document.documentElement.clientHeight, window.innerHeight);
-                return !(rect.bottom < 0 || rect.top - viewHeight >= 0);
-            }
-
-            return checkVisible(args[0]);
+        return (bool)ExecuteJavascriptNoException($@"
+            {JavascriptFunctions.IsVisible(checkIfFullyVisible)}
+            return IsVisible(args[0]);
         ", elem);
     }
 
-    public bool IsVisible(string selector)
+    public bool IsVisible(string selector, bool checkIfFullyVisible = false)
     {
-        return IsVisible(QuerySelector(selector));
+        return IsVisible(QuerySelector(selector), checkIfFullyVisible);
     }
 
     public void Sleep(int seconds)
