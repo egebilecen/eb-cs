@@ -76,13 +76,21 @@ namespace EB_Utility
         // return: (<status code>, <nullable response string>)
         public static async Task<(int, string)> GetAsync(HttpClient httpClient, string url)
         {
+            (int, byte[]) response = await GetRawAsync(httpClient, url);
+            return (response.Item1, Encoding.UTF8.GetString(response.Item2, 0, response.Item2.Length));
+        }
+
+        // TaskCanceledException     - Request timeouted
+        // InvalidOperationException - Invalid URL
+        // return: (<status code>, <response bytes>)
+        public static async Task<(int, byte[])> GetRawAsync(HttpClient httpClient, string url)
+        {
             HttpResponseMessage response = await httpClient.GetAsync(url);
             
             int responseCode = (int)response.StatusCode;
             byte[] buffer = await response.Content.ReadAsByteArrayAsync();
-            string responseContent = Encoding.UTF8.GetString(buffer, 0, buffer.Length);
 
-            return (responseCode, responseContent);
+            return (responseCode, buffer);
         }
         
         // TaskCanceledException     - Request timeouted
