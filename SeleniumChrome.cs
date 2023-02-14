@@ -39,6 +39,7 @@ public class SeleniumChrome
     }
 
     public ChromeDriver driver = null;
+    public bool isHeadless { get; private set; } = false;
 
     private void KillDriver()
     {
@@ -54,6 +55,7 @@ public class SeleniumChrome
     public void Init(bool headless = false, bool maximizeWindow = true, int pageLoadTimeout = 0, double scaleFactor = 1.0, (int, int)? windowSize = null, string userAgentOverride = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36", List<string> extraArgs = null)
     {
         KillDriver();
+        isHeadless = headless;
 
         // Create Options
         var chromeOptions = new ChromeOptions();
@@ -118,6 +120,8 @@ public class SeleniumChrome
     // Helper Functions
     public void SetBrowserZoomPercentage(double zoomPercentage)
     {
+        if(isHeadless) return;
+
         const string jsCode = "let selectBox = document.querySelector(\"settings-ui\").shadowRoot.querySelector(\"#main\").shadowRoot.querySelector(\"settings-basic-page\").shadowRoot.querySelector(\"settings-appearance-page\").shadowRoot.querySelector(\"#zoomLevel\");let changeEvent = new Event(\"change\");selectBox.value = arguments[0];selectBox.dispatchEvent(changeEvent);";
         
         GoTo("chrome://settings/");
