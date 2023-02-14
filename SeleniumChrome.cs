@@ -121,7 +121,7 @@ public class SeleniumChrome
         const string jsCode = "let selectBox = document.querySelector(\"settings-ui\").shadowRoot.querySelector(\"#main\").shadowRoot.querySelector(\"settings-basic-page\").shadowRoot.querySelector(\"settings-appearance-page\").shadowRoot.querySelector(\"#zoomLevel\");let changeEvent = new Event(\"change\");selectBox.value = arguments[0];selectBox.dispatchEvent(changeEvent);";
         
         GoTo("chrome://settings/");
-        WaitUntilElementIsExist("settings-ui");
+        WaitUntilElementIsExist("settings-ui", timeout: 5);
 
         driver.ExecuteScript(jsCode, new object[]{ Math.Round(zoomPercentage / 100.0, 2) });
     }
