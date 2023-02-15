@@ -52,7 +52,7 @@ namespace EB_Utility
             return ByteArrayToImage(imageBytes);
         }
 
-        private static ImageCodecInfo GetCodecInfo(string mimeType)
+        public static ImageCodecInfo GetCodecInfo(string mimeType)
         {
             foreach(ImageCodecInfo encoder in ImageCodecInfo.GetImageEncoders())
             {
