@@ -2,6 +2,9 @@
 // [+] Selenium.WebDriver by Selenium Committers
 // [+] DotNetSeleniumExtras.WaitHelpers by SeleniumExtras.WaitHelpers
 
+// Class Requirements:
+// https://github.com/egebilecen/eb-cs/blob/main/Logger.cs
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -10,6 +13,7 @@ using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Support.UI;
 using SeleniumExtras.WaitHelpers;
+using EB_Utility;
 
 public class SeleniumChrome
 {
@@ -88,7 +92,14 @@ public class SeleniumChrome
         var service = ChromeDriverService.CreateDefaultService();
         service.HideCommandPromptWindow = true;
 
-        driver = new ChromeDriver(service, chromeOptions);
+        try
+        {
+            driver = new ChromeDriver(service, chromeOptions);
+        }
+        catch(Exception ex) 
+        { 
+            Logger.LogException(ex, "Exception occured during driver initialization.");    
+        }
 
         if(maximizeWindow) 
             driver.Manage().Window.Maximize();
