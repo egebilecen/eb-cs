@@ -164,12 +164,26 @@ public class SeleniumChrome
 
     public IWebElement QuerySelector(string selector, bool byCssSelector = true)
     {
-        return driver.FindElement(byCssSelector ? By.CssSelector(selector) : By.XPath(selector));
+        try
+        {
+            return driver.FindElement(byCssSelector ? By.CssSelector(selector) : By.XPath(selector));
+        }
+        catch(NoSuchElementException)
+        {
+            return null;
+        }
     }
 
     public IReadOnlyCollection<IWebElement> QuerySelectorAll(string selector, bool byCssSelector = true)
     {
-        return driver.FindElements(byCssSelector ? By.CssSelector(selector) : By.XPath(selector));
+        try
+        {
+            return driver.FindElements(byCssSelector ? By.CssSelector(selector) : By.XPath(selector));
+        }
+        catch(NoSuchElementException)
+        {
+            return null;
+        }
     }
 
     public object ExecuteJavascript(string code, params object[] args)
